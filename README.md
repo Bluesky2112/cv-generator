@@ -1,11 +1,11 @@
 # 🚀 CV Generator
 
-**[🇬🇧 English](#-english) | [🇻🇳 Tiếng Việt](#-tiếng-việt)**
+**[en English](#-english) | [🇻🇳 Tiếng Việt](#-tiếng-việt)**
 
 ---
 
 <a name="-english"></a>
-## 🇬🇧 English
+## EN English
 
 A simple, fast, and secure web tool to create professional resumes (CVs) directly in your browser. No registration, no software installation, and completely **free**.
 
