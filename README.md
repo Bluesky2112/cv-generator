@@ -102,4 +102,4 @@ Vì đây là một trang web tĩnh (Static Web App) chạy hoàn toàn bằng J
    - Chọn nhánh `main` và thư mục `/ (root)`, sau đó bấm **Save**.
 
 ### 📄 Giấy phép (License)
-Dự án này được phân phối dưới giấy phép [MIT License](https://opensource.org/licenses/MIT). Bạn được tự do sử dụng, chỉnh sửa và chia sẻ.
+Dự án này được phân phối dưới giấy phép [MIT License](https://opensource.org/licenses/MIT). Bạn được tự do sử dụng, chỉnh sửa và chia sẻ. 
