@@ -9,7 +9,7 @@
 
 A simple, fast, and secure web tool to create professional resumes (CVs) directly in your browser. No registration, no software installation, and completely **free**.
 
-👉 **Try it live:** [https://Bluesky2112.github.io/cv-generator/](https://Bluesky2112.github.io/cv-generator/) *(Replace `[username]` with your GitHub username)*
+👉 **Try it live:** [https://bluesky2112.github.io/cv-generator/](https://bluesky2112.github.io/cv-generator/)
 
 ### ✨ Features
 - **Live Preview:** Type on the left, and watch your CV update instantly on the right.
