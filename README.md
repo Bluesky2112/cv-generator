@@ -1,105 +1,387 @@
-# 🚀 CV Generator
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CV Generator</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  /* CSS Tùy chỉnh cho Nút chọn ngôn ngữ */
+  .lang-select {
+    padding: 6px 12px;
+    border: 2px solid #1a3d6d;
+    border-radius: 6px;
+    background-color: #f8fafc;
+    color: #1a3d6d;
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+  }
+  .lang-select:hover { background-color: #e2e8f0; }
+</style>
+</head>
+<body class="bg-gray-100 text-gray-800 h-screen flex flex-col md:flex-row overflow-hidden">
 
-**[gb English](#-english) | [🇻🇳 Tiếng Việt](#-tiếng-việt)**
+  <!-- CỘT TRÁI: FORM NHẬP LIỆU -->
+  <div class="w-full md:w-1/2 lg:w-5/12 bg-white shadow-lg overflow-y-auto h-full p-6 relative">
+    
+    <!-- HEADER CỦA FORM -->
+    <div class="flex justify-between items-center mb-6 border-b pb-4">
+      <h1 class="text-2xl font-bold text-blue-900" data-i18n="app_title">Tạo CV Tự Động</h1>
+      
+      <select id="langSelect" class="lang-select text-sm">
+        <option value="vi">🇻🇳 Tiếng Việt</option>
+        <option value="en">🇬🇧 English</option>
+      </select>
+    </div>
 
----
+    <form id="cvForm" class="space-y-5">
+      
+      <!-- Thông tin cơ bản -->
+      <div class="space-y-3 bg-gray-50 p-3 rounded border">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold uppercase text-gray-600" data-i18n="label_name">Họ và Tên</label>
+            <input type="text" id="name" value="Nguyen Van A" class="w-full border p-2 rounded text-sm" required>
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase text-gray-600" data-i18n="label_title">Chức danh</label>
+            <input type="text" id="title" value="Senior Software Engineer" class="w-full border p-2 rounded text-sm" required>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold uppercase text-gray-600" data-i18n="label_contact1">Email & SĐT</label>
+          <input type="text" id="contact1" value="test@gmail.com | +84-932501111" class="w-full border p-2 rounded text-sm" required>
+        </div>
+        <div>
+          <label class="block text-xs font-bold uppercase text-gray-600" data-i18n="label_contact2">Địa chỉ</label>
+          <input type="text" id="contact2" value="Thu Duc, Ho Chi Minh, Vietnam" class="w-full border p-2 rounded text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-bold uppercase text-gray-600" data-i18n="label_contact3">Ngôn ngữ</label>
+          <input type="text" id="contact3" value="Vietnamese (Native) | English (Professional)" class="w-full border p-2 rounded text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-bold uppercase text-gray-600" data-i18n="label_avatar">Ảnh đại diện (Avatar)</label>
+          <input type="file" id="avatarInput" accept="image/*" class="w-full border p-2 rounded text-sm bg-white">
+        </div>
+      </div>
 
-<a name="-english"></a>
-## EN English
+      <!-- Tóm tắt -->
+      <div>
+        <label class="block text-xs font-bold uppercase text-gray-600 mb-1" data-i18n="label_summary">Tóm tắt bản thân</label>
+        <textarea id="summary" rows="3" class="w-full border p-2 rounded text-sm" required>Senior Software Engineer with 10+ years of experience building and operating cloud-native microservices at scale.</textarea>
+      </div>
 
-A simple, fast, and secure web tool to create professional resumes (CVs) directly in your browser. No registration, no software installation, and completely **free**.
+      <!-- Kỹ năng -->
+      <div>
+        <label class="block text-xs font-bold uppercase text-gray-600 mb-1" data-i18n="label_skills">Kỹ năng (Mỗi dòng 1 nhóm kỹ năng)</label>
+        <textarea id="skills" rows="4" class="w-full border p-2 rounded text-sm" required>Languages: Java 21, Python, TypeScript, SQL
+Backend: Spring Boot 3, Spring Security, Node.js</textarea>
+      </div>
 
-👉 **Try it live:** [https://bluesky2112.github.io/cv-generator/](https://bluesky2112.github.io/cv-generator/)
+      <!-- KINH NGHIỆM LÀM VIỆC -->
+      <div class="border-t pt-4">
+        <div class="flex justify-between items-center mb-3">
+          <h2 class="text-md font-bold text-blue-900 uppercase" data-i18n="section_experience">Kinh nghiệm làm việc</h2>
+          <button type="button" onclick="addExperience()" class="bg-blue-100 text-blue-700 px-3 py-1 rounded text-sm font-bold hover:bg-blue-200 transition" data-i18n="btn_add_exp">+ Thêm</button>
+        </div>
+        <div id="experience-container" class="space-y-4"></div>
+      </div>
 
-### ✨ Features
-- **Live Preview:** Type on the left, and watch your CV update instantly on the right.
-- **Avatar Support:** Automatically embeds your photo (Base64) directly into the exported HTML file.
-- **ATS-Friendly:** Single-column layout using basic HTML tables and elements. No complex CSS that breaks parsing by Applicant Tracking Systems.
-- **100% Client-Side:** All data is processed locally in your browser. No data is sent to any server.
-- **1-Click HTML Export:** Download a single, self-contained HTML file (with embedded images) ready for PDF printing.
+      <!-- Học vấn -->
+      <div class="border-t pt-4">
+        <label class="block text-xs font-bold uppercase text-gray-600 mb-1" data-i18n="label_education">Học vấn & Giải thưởng</label>
+        <textarea id="education" rows="4" class="w-full border p-2 rounded text-sm">University of Information Technology | 09/2011 - 01/2016
+Bachelor of Software Engineering
+- 2020 Best Overall Team - Hackathon Machine Learning FHM.AVI
+- Second Prize - Game UIT Hackathon 2013</textarea>
+      </div>
 
-### 🛠️ How to Use
-1. Visit the live website.
-2. Fill in the form on the left (Name, Contact, Skills, Experience, etc.).
-3. Upload your avatar photo (optional).
-4. Click **Preview** to check the layout (or let it auto-update).
-5. Click **Download HTML** to save your CV to your computer.
+      <!-- DONATE SECTION -->
+      <div class="mt-8 border-t-2 border-dashed border-gray-300 pt-8 pb-20 flex flex-col items-center">
+        <h3 class="text-sm font-bold text-blue-900 uppercase mb-2" data-i18n="donate_title">Ủng hộ tác giả</h3>
+        <p class="text-xs text-gray-500 mb-4 text-center px-4" data-i18n="donate_desc">Nếu bạn thấy công cụ này hữu ích, hãy mời mình một ly cà phê nhé! ☕</p>
+        <!-- Nhớ để file ảnh donate.png cùng thư mục với file html này -->
+        <img src="donate.png" alt="QR Donate" class="w-40 h-40 object-contain rounded-xl shadow-md border border-gray-200 p-2 bg-white hover:scale-105 transition-transform cursor-pointer">
+      </div>
 
-### 🖨️ Exporting to PDF (Perfect Layout)
-After downloading the `My_CV.html` file:
-1. Open the file in **Google Chrome** or **Microsoft Edge**.
-2. Press `Ctrl + P` (or `Cmd + P` on Mac) to open the print dialog.
-3. Select **Save as PDF**.
-4. **Crucial Settings:**
-   - **Paper size:** A4
-   - **Margins:** Default (or None)
-   - **Check "Background graphics":** To keep the horizontal lines and text colors.
-   - **Uncheck "Headers and footers":** To remove page numbers and dates.
+    </form>
+  </div>
 
-### 💻 Tech Stack
-- **HTML5 / CSS3**
-- **Tailwind CSS** (via CDN) - For building the user interface.
-- **Vanilla JavaScript** - For HTML generation, Base64 image handling, and file export.
+  <!-- CỘT PHẢI: XEM TRƯỚC CV -->
+  <div class="w-full md:w-1/2 lg:w-7/12 bg-gray-400 h-full overflow-y-auto p-4 flex justify-center items-start">
+    <iframe id="previewFrame" class="w-full max-w-[210mm] min-h-[297mm] bg-white shadow-2xl border-none transition-all duration-300"></iframe>
+  </div>
 
-### 🚀 Self-Hosting
-Since this is a static web app powered entirely by client-side JavaScript, you can easily host it for free.
-1. **Fork** or **Clone** this repository.
-2. To run locally, simply open `index.html` in your browser.
-3. **Deploy to GitHub Pages:**
-   - Go to your repo's **Settings** -> **Pages**.
-   - Under *Build and deployment* -> *Source*, choose **Deploy from a branch**.
-   - Select the `main` branch and `/ (root)` folder, then click **Save**.
+  <!-- THANH CÔNG CỤ DƯỚI CÙNG -->
+  <div class="fixed bottom-0 left-0 md:w-1/2 lg:w-5/12 bg-white border-t p-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] flex gap-2 z-10">
+    <button type="button" onclick="generateCV()" class="flex-1 bg-blue-600 text-white py-2 rounded font-bold hover:bg-blue-700 transition text-sm" data-i18n="btn_preview">Xem Trước</button>
+    <button type="button" onclick="printCV()" class="flex-1 bg-purple-600 text-white py-2 rounded font-bold hover:bg-purple-700 transition text-sm" data-i18n="btn_print">In PDF</button>
+    <button type="button" onclick="downloadHTML()" class="flex-1 bg-green-600 text-white py-2 rounded font-bold hover:bg-green-700 transition text-sm" data-i18n="btn_download">Tải HTML</button>
+  </div>
 
-### 📄 License
-This project is licensed under the [MIT License](https://opensource.org/licenses/MIT). You are free to use, modify, and share it.
+<script>
+  let base64Image = "";
+  let currentLang = 'vi';
 
----
+  const i18n = {
+    vi: {
+      app_title: "Tạo CV Tự Động",
+      label_name: "Họ và Tên", label_title: "Chức danh",
+      label_contact1: "Email & SĐT", label_contact2: "Địa chỉ", label_contact3: "Ngôn ngữ",
+      label_avatar: "Ảnh đại diện (Avatar)", label_summary: "Tóm tắt bản thân",
+      label_skills: "Kỹ năng (Mỗi dòng 1 nhóm)", section_experience: "Kinh nghiệm làm việc",
+      btn_add_exp: "+ Thêm", label_education: "Học vấn & Giải thưởng",
+      btn_preview: "Xem Trước", btn_print: "In PDF", btn_download: "Tải HTML",
+      donate_title: "Ủng hộ tác giả",
+      donate_desc: "Nếu bạn thấy công cụ này hữu ích, hãy mời mình một ly cà phê nhé! ☕",
+      placeholder_job_title: "Chức danh (VD: Senior Engineer)", placeholder_job_date: "Thời gian (VD: 2021 - Present)",
+      placeholder_job_company: "Tên công ty", placeholder_job_desc: "Mô tả công việc (Mỗi dòng bắt đầu bằng dấu - để tạo gạch đầu dòng)",
+      cv_summary: "Tóm tắt bản thân", cv_skills: "Kỹ năng chuyên môn",
+      cv_experience: "Kinh nghiệm làm việc", cv_education: "Học vấn & Giải thưởng"
+    },
+    en: {
+      app_title: "CV Generator",
+      label_name: "Full Name", label_title: "Job Title",
+      label_contact1: "Email & Phone", label_contact2: "Address", label_contact3: "Languages",
+      label_avatar: "Avatar (Photo)", label_summary: "Professional Summary",
+      label_skills: "Technical Skills (1 line per group)", section_experience: "Work Experience",
+      btn_add_exp: "+ Add", label_education: "Education & Achievements",
+      btn_preview: "Preview", btn_print: "Print PDF", btn_download: "Download HTML",
+      donate_title: "Support the Author",
+      donate_desc: "If you find this tool helpful, you can buy me a coffee! ☕",
+      placeholder_job_title: "Job Title (e.g., Senior Engineer)", placeholder_job_date: "Date (e.g., 2021 - Present)",
+      placeholder_job_company: "Company Name", placeholder_job_desc: "Job Description (Start lines with '-' for bullets)",
+      cv_summary: "Professional Summary", cv_skills: "Technical Skills",
+      cv_experience: "Work Experience", cv_education: "Education & Achievements"
+    }
+  };
 
-<a name="-tiếng-việt"></a>
-## 🇻🇳 Tiếng Việt
+  function t(key) { return i18n[currentLang][key] || key; }
 
-Một công cụ web đơn giản, nhanh chóng và bảo mật giúp bạn tạo CV (Resume) chuyên nghiệp trực tiếp trên trình duyệt. Không cần đăng ký, không cần cài đặt phần mềm, và đặc biệt là **hoàn toàn miễn phí**.
+  document.getElementById('langSelect').addEventListener('change', function(e) {
+    currentLang = e.target.value;
+    updateUILanguage();
+    generateCV();
+  });
 
-👉 **Trải nghiệm ngay tại đây:** [https://[username].github.io/cv-generator/](https://[username].github.io/cv-generator/) *(Hãy thay `[username]` bằng tên tài khoản GitHub của bạn)*
+  function updateUILanguage() {
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      el.innerText = t(el.getAttribute('data-i18n'));
+    });
+    document.querySelectorAll('.experience-block').forEach(block => {
+      block.querySelector('.exp-title').placeholder = t('placeholder_job_title');
+      block.querySelector('.exp-date').placeholder = t('placeholder_job_date');
+      block.querySelector('.exp-company').placeholder = t('placeholder_job_company');
+      block.querySelector('.exp-desc').placeholder = t('placeholder_job_desc');
+    });
+  }
 
-### ✨ Tính năng nổi bật
-- **Xem trước thời gian thực (Live Preview):** Gõ thông tin bên trái, CV sẽ tự động cập nhật bên phải.
-- **Hỗ trợ Ảnh đại diện:** Tự động nhúng ảnh (Base64) trực tiếp vào file HTML xuất ra.
-- **Chuẩn ATS (Applicant Tracking System):** Bố cục 1 cột, sử dụng Table và các thẻ HTML cơ bản, không dùng các thuộc tính CSS phức tạp gây lỗi khi đọc bằng máy.
-- **Bảo mật 100% (Client-side):** Mọi dữ liệu bạn nhập chỉ xử lý trên trình duyệt của bạn. Không có dữ liệu nào được gửi lên server.
-- **Xuất file HTML 1-Click:** Tải về file HTML duy nhất (chứa cả ảnh và chữ), sẵn sàng để in ra PDF.
+  document.getElementById('avatarInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        base64Image = event.target.result;
+        generateCV();
+      };
+      reader.readAsDataURL(file);
+    }
+  });
 
-### 🛠️ Hướng dẫn sử dụng
-1. Truy cập vào trang web của tool.
-2. Điền đầy đủ thông tin vào biểu mẫu bên trái (Họ tên, Liên hệ, Kỹ năng, Kinh nghiệm, v.v.).
-3. Tải lên ảnh đại diện (Avatar) nếu muốn.
-4. Bấm nút **Xem Trước** để kiểm tra lại (hoặc tool sẽ tự động cập nhật).
-5. Bấm **Tải File HTML** để lưu CV về máy.
+  function createJobBlockHTML(title = "", date = "", company = "", desc = "") {
+    return `
+      <div class="experience-block bg-gray-50 border rounded p-3 relative">
+        <button type="button" onclick="this.parentElement.remove(); generateCV();" class="absolute top-2 right-2 text-red-500 hover:text-red-700 text-sm font-bold" title="Xóa">✕</button>
+        <div class="grid grid-cols-2 gap-2 mb-2 pr-6">
+          <input type="text" class="exp-title w-full border p-1 rounded text-sm" placeholder="${t('placeholder_job_title')}" value="${title}">
+          <input type="text" class="exp-date w-full border p-1 rounded text-sm" placeholder="${t('placeholder_job_date')}" value="${date}">
+        </div>
+        <input type="text" class="exp-company w-full border p-1 rounded text-sm mb-2" placeholder="${t('placeholder_job_company')}" value="${company}">
+        <textarea class="exp-desc w-full border p-1 rounded text-sm" rows="3" placeholder="${t('placeholder_job_desc')}">${desc}</textarea>
+      </div>
+    `;
+  }
 
-### 🖨️ Cách in ra PDF chuẩn đẹp nhất
-Sau khi tải file `My_CV.html` về máy:
-1. Mở file bằng trình duyệt **Google Chrome** hoặc **Microsoft Edge**.
-2. Nhấn `Ctrl + P` (hoặc `Cmd + P` trên Mac) để mở hộp thoại in.
-3. Chọn **Save as PDF** (Lưu dưới dạng PDF).
-4. Cài đặt quan trọng:
-   - **Paper size:** A4
-   - **Margins:** Default (hoặc None)
-   - **Tích chọn "Background graphics":** Để giữ lại các đường kẻ ngang và màu chữ.
-   - **Bỏ tích "Headers and footers":** Để xóa số trang và ngày tháng ở đầu/cuối trang.
+  function addExperience(title, date, company, desc) {
+    document.getElementById('experience-container').insertAdjacentHTML('beforeend', createJobBlockHTML(title, date, company, desc));
+  }
 
-### 💻 Công nghệ sử dụng
-- **HTML5 / CSS3**
-- **Tailwind CSS** (thông qua CDN) - Dùng để thiết kế giao diện form nhập liệu.
-- **Vanilla JavaScript** - Xử lý logic tạo HTML, nhúng ảnh Base64 và xuất file.
+  window.addEventListener('DOMContentLoaded', () => {
+    updateUILanguage();
+    addExperience(
+      "Senior Software Engineer", 
+      "06/2021 - Present", 
+      "Vault - FPT (C99 program)", 
+      "- Developed and maintained RESTful microservices in Java 21.\n- Built features on React 19 front end."
+    );
+    generateCV();
+  });
 
-### 🚀 Tự triển khai (Self-host)
-Vì đây là một trang web tĩnh (Static Web App) chạy hoàn toàn bằng JavaScript, bạn có thể dễ dàng tự host nó miễn phí.
-1. **Fork** hoặc **Clone** repository này về máy.
-2. Nếu chạy local, bạn chỉ cần mở file `index.html` bằng trình duyệt.
-3. **Deploy lên GitHub Pages:**
-   - Vào phần **Settings** của repo -> **Pages**.
-   - Ở mục *Build and deployment* -> *Source*, chọn **Deploy from a branch**.
-   - Chọn nhánh `main` và thư mục `/ (root)`, sau đó bấm **Save**.
+  document.getElementById('cvForm').addEventListener('input', () => {
+    clearTimeout(window.debounceTimer);
+    window.debounceTimer = setTimeout(generateCV, 500);
+  });
 
-### 📄 Giấy phép (License)
-Dự án này được phân phối dưới giấy phép [MIT License](https://opensource.org/licenses/MIT). Bạn được tự do sử dụng, chỉnh sửa và chia sẻ. 
+  function generateHTML() {
+    const name = document.getElementById('name').value;
+    const title = document.getElementById('title').value;
+    const contact1 = document.getElementById('contact1').value;
+    const contact2 = document.getElementById('contact2').value;
+    const contact3 = document.getElementById('contact3').value;
+    const summary = document.getElementById('summary').value;
+    const skillsRaw = document.getElementById('skills').value;
+    const eduRaw = document.getElementById('education').value;
+
+    let skillsHTML = "";
+    skillsRaw.split('\n').forEach(line => {
+      if(line.trim()) skillsHTML += `<p><b>${line.split(':')[0]}:</b>${line.substring(line.indexOf(':') + 1)}</p>`;
+    });
+
+    let expHTML = "";
+    document.querySelectorAll('.experience-block').forEach(block => {
+      const jTitle = block.querySelector('.exp-title').value;
+      const jDate = block.querySelector('.exp-date').value;
+      const jCompany = block.querySelector('.exp-company').value;
+      const jDesc = block.querySelector('.exp-desc').value;
+
+      let descHTML = "";
+      let inList = false;
+      jDesc.split('\n').forEach(line => {
+        line = line.trim();
+        if(!line) return;
+        if(line.startsWith('-')) {
+           if(!inList) { descHTML += '<ul>'; inList = true; }
+           descHTML += `<li>${line.substring(1).trim()}</li>`;
+        } else if(line.toLowerCase().startsWith('technology:') || line.toLowerCase().startsWith('công nghệ:')) {
+           if(inList) { descHTML += '</ul>'; inList = false; }
+           descHTML += `<div class="tech">${line}</div>`;
+        } else {
+           if(inList) { descHTML += '</ul>'; inList = false; }
+           descHTML += `<div class="job-desc">${line}</div>`;
+        }
+      });
+      if(inList) descHTML += '</ul>';
+
+      expHTML += `
+        <div class="job">
+          <table class="job-header">
+            <tr><td class="job-title">${jTitle}</td><td class="job-date">${jDate}</td></tr>
+          </table>
+          <div class="job-company">${jCompany}</div>
+          ${descHTML}
+        </div>
+      `;
+    });
+
+    let eduHTML = "";
+    const eduLines = eduRaw.trim().split('\n');
+    if(eduLines.length >= 2) {
+       const headerParts = eduLines[0].split('|');
+       eduHTML += `
+        <div class="job">
+          <table class="job-header">
+            <tr><td class="job-title">${headerParts[0]?.trim()}</td><td class="job-date">${headerParts[1]?.trim() || ""}</td></tr>
+          </table>
+          <div class="job-company">${eduLines[1]?.trim()}</div>
+          <ul>${eduLines.slice(2).map(l => l.trim().startsWith('-') ? `<li>${l.substring(1).trim()}</li>` : `<li>${l}</li>`).join('')}</ul>
+        </div>
+       `;
+    }
+
+    const avatarHTML = base64Image ? `<td class="avatar-cell"><img src="${base64Image}" class="avatar-img" alt="Avatar"></td>` : '';
+
+    return `
+      <!DOCTYPE html>
+      <html lang="${currentLang}">
+      <head>
+      <meta charset="UTF-8">
+      <title>${name} - CV</title>
+      <style>
+        @page { size: A4; margin: 15mm; }
+        body { font-family: "Calibri", "Arial", sans-serif; font-size: 10pt; line-height: 1.35; color: #333; margin: 0; padding: 0; }
+        @media screen { body { padding: 15mm; background: #fff; } }
+        .header-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+        .header-table td { vertical-align: middle; padding: 0; }
+        .avatar-cell { width: 110px; padding-right: 15px !important; }
+        .avatar-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 2px solid #1a3d6d; }
+        h1 { font-size: 22pt; margin: 0 0 3px 0; color: #1a3d6d; text-transform: uppercase; }
+        .subtitle { font-size: 11.5pt; font-weight: bold; color: #555; margin-bottom: 8px; }
+        .contact { font-size: 9pt; color: #444; line-height: 1.5; }
+        h2 { font-size: 11.5pt; color: #1a3d6d; text-transform: uppercase; border-bottom: 1.5px solid #1a3d6d; padding-bottom: 2px; margin: 15px 0 8px 0; }
+        .skills-list { font-size: 9.5pt; line-height: 1.4; }
+        .skills-list p { margin-bottom: 3px; }
+        .job { margin-bottom: 12px; }
+        table.job-header { width: 100%; border-collapse: collapse; margin-bottom: 2px; }
+        table.job-header td { padding: 0; }
+        .job-title { text-align: left; font-weight: bold; font-size: 10.5pt; color: #1a3d6d; }
+        .job-date { text-align: right; font-weight: bold; font-size: 9.5pt; color: #555; }
+        .job-company { font-style: italic; font-size: 9.5pt; color: #333; margin-bottom: 4px; }
+        .job-desc { font-size: 9.5pt; margin-bottom: 3px; color: #333; }
+        ul { margin: 3px 0 5px 0; padding-left: 15px; }
+        li { margin-bottom: 3px; font-size: 9.5pt; text-align: justify; color: #333; }
+        .tech { font-size: 9pt; font-style: italic; color: #666; margin-top: 3px; }
+        .summary { text-align: justify; font-size: 9.5pt; white-space: pre-wrap; }
+      </style>
+      </head>
+      <body>
+        <table class="header-table">
+          <tr>
+            ${avatarHTML}
+            <td class="info-cell">
+              <h1>${name}</h1>
+              <div class="subtitle">${title}</div>
+              <div class="contact">${contact1}<br>${contact2}<br>${contact3}</div>
+            </td>
+          </tr>
+        </table>
+        <h2>${t('cv_summary')}</h2>
+        <div class="summary">${summary}</div>
+        <h2>${t('cv_skills')}</h2>
+        <div class="skills-list">${skillsHTML}</div>
+        <h2>${t('cv_experience')}</h2>
+        ${expHTML}
+        <h2>${t('cv_education')}</h2>
+        ${eduHTML}
+      </body>
+      </html>
+    `;
+  }
+
+  function generateCV() {
+    const html = generateHTML();
+    const frame = document.getElementById('previewFrame');
+    const doc = frame.contentDocument || frame.contentWindow.document;
+    doc.open();
+    doc.write(html);
+    doc.close();
+
+    setTimeout(() => {
+      if (doc.body) {
+        frame.style.height = doc.body.scrollHeight + 'px';
+      }
+    }, 50);
+  }
+
+  function printCV() {
+    const frame = document.getElementById('previewFrame');
+    frame.contentWindow.focus();
+    frame.contentWindow.print();
+  }
+
+  function downloadHTML() {
+    const html = generateHTML();
+    const blob = new Blob([html], {type: 'text/html'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'My_CV.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+</script>
+</body>
+</html>
