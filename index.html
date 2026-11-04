@@ -56,11 +56,10 @@
   <!-- CỘT TRÁI: FORM NHẬP LIỆU -->
   <div class="w-full md:w-1/2 lg:w-5/12 bg-white shadow-lg overflow-y-auto h-full p-6 pb-24 relative">
     
-    <!-- HEADER CỦA FORM: Tiêu đề và Nút chọn ngôn ngữ -->
+    <!-- HEADER CỦA FORM -->
     <div class="flex justify-between items-center mb-6 border-b pb-4">
       <h1 class="text-2xl font-bold text-blue-900" data-i18n="app_title">Tạo CV Tự Động</h1>
       
-      <!-- NÚT CHỌN NGÔN NGỮ Ở ĐÂY -->
       <select id="langSelect" class="lang-select text-sm">
         <option value="vi">🇻🇳 Tiếng Việt</option>
         <option value="en">🇬🇧 English</option>
@@ -83,7 +82,7 @@
         </div>
         <div>
           <label class="block text-xs font-bold uppercase text-gray-600" data-i18n="label_contact1">Email & SĐT</label>
-          <input type="text" id="contact1" value="test@gmail.com | +84-932501999" class="w-full border p-2 rounded text-sm" required>
+          <input type="text" id="contact1" value="test@gmail.com | +84-932501111" class="w-full border p-2 rounded text-sm" required>
         </div>
         <div>
           <label class="block text-xs font-bold uppercase text-gray-600" data-i18n="label_contact2">Địa chỉ</label>
@@ -138,10 +137,14 @@ Bachelor of Software Engineering
     <iframe id="previewFrame" class="w-full max-w-[210mm] bg-white shadow-xl h-[297mm] border-none"></iframe>
   </div>
 
-  <!-- THANH CÔNG CỤ DƯỚI CÙNG -->
-  <div class="fixed bottom-0 left-0 md:w-1/2 lg:w-5/12 bg-white border-t p-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] flex gap-4">
-    <button type="button" onclick="generateCV()" class="flex-1 bg-blue-600 text-white py-2 rounded font-bold hover:bg-blue-700 transition" data-i18n="btn_preview">Xem Trước</button>
-    <button type="button" onclick="downloadHTML()" class="flex-1 bg-green-600 text-white py-2 rounded font-bold hover:bg-green-700 transition" data-i18n="btn_download">Tải File HTML</button>
+  <!-- THANH CÔNG CỤ DƯỚI CÙNG (Đã thêm nút In PDF) -->
+  <div class="fixed bottom-0 left-0 md:w-1/2 lg:w-5/12 bg-white border-t p-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] flex gap-2">
+    <button type="button" onclick="generateCV()" class="flex-1 bg-blue-600 text-white py-2 rounded font-bold hover:bg-blue-700 transition text-sm" data-i18n="btn_preview">Xem Trước</button>
+    
+    <!-- NÚT IN PDF -->
+    <button type="button" onclick="printCV()" class="flex-1 bg-purple-600 text-white py-2 rounded font-bold hover:bg-purple-700 transition text-sm" data-i18n="btn_print">In PDF</button>
+    
+    <button type="button" onclick="downloadHTML()" class="flex-1 bg-green-600 text-white py-2 rounded font-bold hover:bg-green-700 transition text-sm" data-i18n="btn_download">Tải HTML</button>
   </div>
 
 <script>
@@ -156,7 +159,7 @@ Bachelor of Software Engineering
       label_avatar: "Ảnh đại diện (Avatar)", label_summary: "Tóm tắt bản thân",
       label_skills: "Kỹ năng (Mỗi dòng 1 nhóm)", section_experience: "Kinh nghiệm làm việc",
       btn_add_exp: "+ Thêm", label_education: "Học vấn & Giải thưởng",
-      btn_preview: "Xem Trước", btn_download: "Tải File HTML",
+      btn_preview: "Xem Trước", btn_print: "In PDF", btn_download: "Tải HTML",
       placeholder_job_title: "Chức danh (VD: Senior Engineer)", placeholder_job_date: "Thời gian (VD: 2021 - Present)",
       placeholder_job_company: "Tên công ty", placeholder_job_desc: "Mô tả công việc (Mỗi dòng bắt đầu bằng dấu - để tạo gạch đầu dòng)",
       cv_summary: "Tóm tắt bản thân", cv_skills: "Kỹ năng chuyên môn",
@@ -169,7 +172,7 @@ Bachelor of Software Engineering
       label_avatar: "Avatar (Photo)", label_summary: "Professional Summary",
       label_skills: "Technical Skills (1 line per group)", section_experience: "Work Experience",
       btn_add_exp: "+ Add", label_education: "Education & Achievements",
-      btn_preview: "Preview", btn_download: "Download HTML",
+      btn_preview: "Preview", btn_print: "Print PDF", btn_download: "Download HTML",
       placeholder_job_title: "Job Title (e.g., Senior Engineer)", placeholder_job_date: "Date (e.g., 2021 - Present)",
       placeholder_job_company: "Company Name", placeholder_job_desc: "Job Description (Start lines with '-' for bullets)",
       cv_summary: "Professional Summary", cv_skills: "Technical Skills",
@@ -179,14 +182,12 @@ Bachelor of Software Engineering
 
   function t(key) { return i18n[currentLang][key] || key; }
 
-  // Xử lý sự kiện chọn ngôn ngữ
   document.getElementById('langSelect').addEventListener('change', function(e) {
     currentLang = e.target.value;
     updateUILanguage();
     generateCV();
   });
 
-  // Cập nhật giao diện
   function updateUILanguage() {
     document.querySelectorAll('[data-i18n]').forEach(el => {
       el.innerText = t(el.getAttribute('data-i18n'));
@@ -199,7 +200,6 @@ Bachelor of Software Engineering
     });
   }
 
-  // Upload ảnh
   document.getElementById('avatarInput').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) {
@@ -212,7 +212,6 @@ Bachelor of Software Engineering
     }
   });
 
-  // Tạo khối công việc
   function createJobBlockHTML(title = "", date = "", company = "", desc = "") {
     return `
       <div class="experience-block bg-gray-50 border rounded p-3 relative">
@@ -378,6 +377,14 @@ Bachelor of Software Engineering
     doc.open();
     doc.write(html);
     doc.close();
+  }
+
+  // HÀM IN PDF (Chỉ in nội dung trong iframe)
+  function printCV() {
+    const frame = document.getElementById('previewFrame');
+    // Focus vào iframe trước khi gọi lệnh in để đảm bảo trình duyệt in đúng nội dung
+    frame.contentWindow.focus();
+    frame.contentWindow.print();
   }
 
   function downloadHTML() {
