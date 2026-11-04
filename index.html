@@ -6,7 +6,7 @@
 <title>CV Generator</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-  /* CSS cho khung xem trước CV */
+  /* CSS xem trước CV */
   .cv-preview {
     font-family: "Calibri", "Arial", sans-serif;
     font-size: 10pt;
@@ -36,6 +36,19 @@
   .cv-preview .tech { font-size: 9pt; font-style: italic; color: #666; margin-top: 3px; }
   .cv-preview .summary { text-align: justify; font-size: 9.5pt; white-space: pre-wrap; }
   .cv-preview .avatar-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 2px solid #1a3d6d; }
+
+  /* CSS Tùy chỉnh cho Nút chọn ngôn ngữ */
+  .lang-select {
+    padding: 6px 12px;
+    border: 2px solid #1a3d6d;
+    border-radius: 6px;
+    background-color: #f8fafc;
+    color: #1a3d6d;
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+  }
+  .lang-select:hover { background-color: #e2e8f0; }
 </style>
 </head>
 <body class="bg-gray-100 text-gray-800 h-screen flex flex-col md:flex-row overflow-hidden">
@@ -43,10 +56,12 @@
   <!-- CỘT TRÁI: FORM NHẬP LIỆU -->
   <div class="w-full md:w-1/2 lg:w-5/12 bg-white shadow-lg overflow-y-auto h-full p-6 pb-24 relative">
     
-    <!-- Thanh chọn ngôn ngữ -->
-    <div class="flex justify-between items-center mb-4 border-b pb-3">
-      <h1 class="text-2xl font-bold text-blue-900" data-i18n="app_title">CV Generator</h1>
-      <select id="langSelect" class="border p-1 rounded bg-gray-50 text-sm font-bold text-blue-700 cursor-pointer outline-none">
+    <!-- HEADER CỦA FORM: Tiêu đề và Nút chọn ngôn ngữ -->
+    <div class="flex justify-between items-center mb-6 border-b pb-4">
+      <h1 class="text-2xl font-bold text-blue-900" data-i18n="app_title">Tạo CV Tự Động</h1>
+      
+      <!-- NÚT CHỌN NGÔN NGỮ Ở ĐÂY -->
+      <select id="langSelect" class="lang-select text-sm">
         <option value="vi">🇻🇳 Tiếng Việt</option>
         <option value="en">🇬🇧 English</option>
       </select>
@@ -68,7 +83,7 @@
         </div>
         <div>
           <label class="block text-xs font-bold uppercase text-gray-600" data-i18n="label_contact1">Email & SĐT</label>
-          <input type="text" id="contact1" value="ducthien.cnpm06@gmail.com | +84-932501045" class="w-full border p-2 rounded text-sm" required>
+          <input type="text" id="contact1" value="test@gmail.com | +84-932501999" class="w-full border p-2 rounded text-sm" required>
         </div>
         <div>
           <label class="block text-xs font-bold uppercase text-gray-600" data-i18n="label_contact2">Địa chỉ</label>
@@ -97,16 +112,13 @@
 Backend: Spring Boot 3, Spring Security, Node.js</textarea>
       </div>
 
-      <!-- KINH NGHIỆM LÀM VIỆC (DYNAMIC FORM) -->
+      <!-- KINH NGHIỆM LÀM VIỆC -->
       <div class="border-t pt-4">
         <div class="flex justify-between items-center mb-3">
           <h2 class="text-md font-bold text-blue-900 uppercase" data-i18n="section_experience">Kinh nghiệm làm việc</h2>
           <button type="button" onclick="addExperience()" class="bg-blue-100 text-blue-700 px-3 py-1 rounded text-sm font-bold hover:bg-blue-200 transition" data-i18n="btn_add_exp">+ Thêm</button>
         </div>
-        
-        <div id="experience-container" class="space-y-4">
-          <!-- Các khối kinh nghiệm sẽ được JS sinh ra ở đây -->
-        </div>
+        <div id="experience-container" class="space-y-4"></div>
       </div>
 
       <!-- Học vấn -->
@@ -134,79 +146,51 @@ Bachelor of Software Engineering
 
 <script>
   let base64Image = "";
-  let currentLang = 'vi'; // Mặc định là tiếng Việt
+  let currentLang = 'vi';
 
-  // Từ điển đa ngôn ngữ
   const i18n = {
     vi: {
       app_title: "Tạo CV Tự Động",
-      label_name: "Họ và Tên",
-      label_title: "Chức danh",
-      label_contact1: "Email & SĐT",
-      label_contact2: "Địa chỉ",
-      label_contact3: "Ngôn ngữ",
-      label_avatar: "Ảnh đại diện (Avatar)",
-      label_summary: "Tóm tắt bản thân",
-      label_skills: "Kỹ năng (Mỗi dòng 1 nhóm)",
-      section_experience: "Kinh nghiệm làm việc",
-      btn_add_exp: "+ Thêm",
-      label_education: "Học vấn & Giải thưởng",
-      btn_preview: "Xem Trước",
-      btn_download: "Tải File HTML",
-      placeholder_job_title: "Chức danh (VD: Senior Engineer)",
-      placeholder_job_date: "Thời gian (VD: 2021 - Present)",
-      placeholder_job_company: "Tên công ty",
-      placeholder_job_desc: "Mô tả công việc (Mỗi dòng bắt đầu bằng dấu - để tạo gạch đầu dòng)",
-      cv_summary: "Tóm tắt bản thân",
-      cv_skills: "Kỹ năng chuyên môn",
-      cv_experience: "Kinh nghiệm làm việc",
-      cv_education: "Học vấn & Giải thưởng"
+      label_name: "Họ và Tên", label_title: "Chức danh",
+      label_contact1: "Email & SĐT", label_contact2: "Địa chỉ", label_contact3: "Ngôn ngữ",
+      label_avatar: "Ảnh đại diện (Avatar)", label_summary: "Tóm tắt bản thân",
+      label_skills: "Kỹ năng (Mỗi dòng 1 nhóm)", section_experience: "Kinh nghiệm làm việc",
+      btn_add_exp: "+ Thêm", label_education: "Học vấn & Giải thưởng",
+      btn_preview: "Xem Trước", btn_download: "Tải File HTML",
+      placeholder_job_title: "Chức danh (VD: Senior Engineer)", placeholder_job_date: "Thời gian (VD: 2021 - Present)",
+      placeholder_job_company: "Tên công ty", placeholder_job_desc: "Mô tả công việc (Mỗi dòng bắt đầu bằng dấu - để tạo gạch đầu dòng)",
+      cv_summary: "Tóm tắt bản thân", cv_skills: "Kỹ năng chuyên môn",
+      cv_experience: "Kinh nghiệm làm việc", cv_education: "Học vấn & Giải thưởng"
     },
     en: {
       app_title: "CV Generator",
-      label_name: "Full Name",
-      label_title: "Job Title",
-      label_contact1: "Email & Phone",
-      label_contact2: "Address",
-      label_contact3: "Languages",
-      label_avatar: "Avatar (Photo)",
-      label_summary: "Professional Summary",
-      label_skills: "Technical Skills (1 line per group)",
-      section_experience: "Work Experience",
-      btn_add_exp: "+ Add",
-      label_education: "Education & Achievements",
-      btn_preview: "Preview",
-      btn_download: "Download HTML",
-      placeholder_job_title: "Job Title (e.g., Senior Engineer)",
-      placeholder_job_date: "Date (e.g., 2021 - Present)",
-      placeholder_job_company: "Company Name",
-      placeholder_job_desc: "Job Description (Start lines with '-' for bullets)",
-      cv_summary: "Professional Summary",
-      cv_skills: "Technical Skills",
-      cv_experience: "Work Experience",
-      cv_education: "Education & Achievements"
+      label_name: "Full Name", label_title: "Job Title",
+      label_contact1: "Email & Phone", label_contact2: "Address", label_contact3: "Languages",
+      label_avatar: "Avatar (Photo)", label_summary: "Professional Summary",
+      label_skills: "Technical Skills (1 line per group)", section_experience: "Work Experience",
+      btn_add_exp: "+ Add", label_education: "Education & Achievements",
+      btn_preview: "Preview", btn_download: "Download HTML",
+      placeholder_job_title: "Job Title (e.g., Senior Engineer)", placeholder_job_date: "Date (e.g., 2021 - Present)",
+      placeholder_job_company: "Company Name", placeholder_job_desc: "Job Description (Start lines with '-' for bullets)",
+      cv_summary: "Professional Summary", cv_skills: "Technical Skills",
+      cv_experience: "Work Experience", cv_education: "Education & Achievements"
     }
   };
 
-  // Hàm lấy câu dịch
-  function t(key) {
-    return i18n[currentLang][key] || key;
-  }
+  function t(key) { return i18n[currentLang][key] || key; }
 
-  // Hàm đổi ngôn ngữ
+  // Xử lý sự kiện chọn ngôn ngữ
   document.getElementById('langSelect').addEventListener('change', function(e) {
     currentLang = e.target.value;
     updateUILanguage();
     generateCV();
   });
 
-  // Cập nhật toàn bộ text trên UI
+  // Cập nhật giao diện
   function updateUILanguage() {
     document.querySelectorAll('[data-i18n]').forEach(el => {
       el.innerText = t(el.getAttribute('data-i18n'));
     });
-
-    // Cập nhật placeholder cho các khối kinh nghiệm động
     document.querySelectorAll('.experience-block').forEach(block => {
       block.querySelector('.exp-title').placeholder = t('placeholder_job_title');
       block.querySelector('.exp-date').placeholder = t('placeholder_job_date');
@@ -215,7 +199,7 @@ Bachelor of Software Engineering
     });
   }
 
-  // Xử lý upload ảnh
+  // Upload ảnh
   document.getElementById('avatarInput').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) {
@@ -228,7 +212,7 @@ Bachelor of Software Engineering
     }
   });
 
-  // Tạo khối HTML cho 1 công việc
+  // Tạo khối công việc
   function createJobBlockHTML(title = "", date = "", company = "", desc = "") {
     return `
       <div class="experience-block bg-gray-50 border rounded p-3 relative">
@@ -243,15 +227,12 @@ Bachelor of Software Engineering
     `;
   }
 
-  // Thêm khối kinh nghiệm mới vào form
   function addExperience(title, date, company, desc) {
-    const container = document.getElementById('experience-container');
-    container.insertAdjacentHTML('beforeend', createJobBlockHTML(title, date, company, desc));
+    document.getElementById('experience-container').insertAdjacentHTML('beforeend', createJobBlockHTML(title, date, company, desc));
   }
 
-  // Khởi tạo khi load trang
   window.addEventListener('DOMContentLoaded', () => {
-    updateUILanguage(); // Set ngôn ngữ mặc định cho các label
+    updateUILanguage();
     addExperience(
       "Senior Software Engineer", 
       "06/2021 - Present", 
@@ -261,13 +242,11 @@ Bachelor of Software Engineering
     generateCV();
   });
 
-  // Tự động generate khi gõ
   document.getElementById('cvForm').addEventListener('input', () => {
     clearTimeout(window.debounceTimer);
     window.debounceTimer = setTimeout(generateCV, 500);
   });
 
-  // Tạo HTML CV
   function generateHTML() {
     const name = document.getElementById('name').value;
     const title = document.getElementById('title').value;
@@ -278,16 +257,13 @@ Bachelor of Software Engineering
     const skillsRaw = document.getElementById('skills').value;
     const eduRaw = document.getElementById('education').value;
 
-    // Kỹ năng
     let skillsHTML = "";
     skillsRaw.split('\n').forEach(line => {
       if(line.trim()) skillsHTML += `<p><b>${line.split(':')[0]}:</b>${line.substring(line.indexOf(':') + 1)}</p>`;
     });
 
-    // Kinh nghiệm
     let expHTML = "";
-    const expBlocks = document.querySelectorAll('.experience-block');
-    expBlocks.forEach(block => {
+    document.querySelectorAll('.experience-block').forEach(block => {
       const jTitle = block.querySelector('.exp-title').value;
       const jDate = block.querySelector('.exp-date').value;
       const jCompany = block.querySelector('.exp-company').value;
@@ -314,10 +290,7 @@ Bachelor of Software Engineering
       expHTML += `
         <div class="job">
           <table class="job-header">
-            <tr>
-              <td class="job-title">${jTitle}</td>
-              <td class="job-date">${jDate}</td>
-            </tr>
+            <tr><td class="job-title">${jTitle}</td><td class="job-date">${jDate}</td></tr>
           </table>
           <div class="job-company">${jCompany}</div>
           ${descHTML}
@@ -325,7 +298,6 @@ Bachelor of Software Engineering
       `;
     });
 
-    // Học vấn
     let eduHTML = "";
     const eduLines = eduRaw.trim().split('\n');
     if(eduLines.length >= 2) {
@@ -333,22 +305,15 @@ Bachelor of Software Engineering
        eduHTML += `
         <div class="job">
           <table class="job-header">
-            <tr>
-              <td class="job-title">${headerParts[0]?.trim()}</td>
-              <td class="job-date">${headerParts[1]?.trim() || ""}</td>
-            </tr>
+            <tr><td class="job-title">${headerParts[0]?.trim()}</td><td class="job-date">${headerParts[1]?.trim() || ""}</td></tr>
           </table>
           <div class="job-company">${eduLines[1]?.trim()}</div>
-          <ul>
-            ${eduLines.slice(2).map(l => l.trim().startsWith('-') ? `<li>${l.substring(1).trim()}</li>` : `<li>${l}</li>`).join('')}
-          </ul>
+          <ul>${eduLines.slice(2).map(l => l.trim().startsWith('-') ? `<li>${l.substring(1).trim()}</li>` : `<li>${l}</li>`).join('')}</ul>
         </div>
        `;
     }
 
-    const avatarHTML = base64Image 
-      ? `<td class="avatar-cell"><img src="${base64Image}" class="avatar-img" alt="Avatar"></td>` 
-      : '';
+    const avatarHTML = base64Image ? `<td class="avatar-cell"><img src="${base64Image}" class="avatar-img" alt="Avatar"></td>` : '';
 
     return `
       <!DOCTYPE html>
@@ -389,9 +354,7 @@ Bachelor of Software Engineering
             <td class="info-cell">
               <h1>${name}</h1>
               <div class="subtitle">${title}</div>
-              <div class="contact">
-                ${contact1}<br>${contact2}<br>${contact3}
-              </div>
+              <div class="contact">${contact1}<br>${contact2}<br>${contact3}</div>
             </td>
           </tr>
         </table>
