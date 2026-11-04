@@ -23,7 +23,7 @@
 <body class="bg-gray-100 text-gray-800 h-screen flex flex-col md:flex-row overflow-hidden">
 
   <!-- CỘT TRÁI: FORM NHẬP LIỆU -->
-  <div class="w-full md:w-1/2 lg:w-5/12 bg-white shadow-lg overflow-y-auto h-full p-6 pb-24 relative">
+  <div class="w-full md:w-1/2 lg:w-5/12 bg-white shadow-lg overflow-y-auto h-full p-6 relative">
     
     <!-- HEADER CỦA FORM -->
     <div class="flex justify-between items-center mb-6 border-b pb-4">
@@ -42,7 +42,7 @@
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-xs font-bold uppercase text-gray-600" data-i18n="label_name">Họ và Tên</label>
-            <input type="text" id="name" value="Nguyen Van Test" class="w-full border p-2 rounded text-sm" required>
+            <input type="text" id="name" value="Nguyen Van A" class="w-full border p-2 rounded text-sm" required>
           </div>
           <div>
             <label class="block text-xs font-bold uppercase text-gray-600" data-i18n="label_title">Chức danh</label>
@@ -98,12 +98,19 @@ Bachelor of Software Engineering
 - Second Prize - Game UIT Hackathon 2013</textarea>
       </div>
 
+      <!-- DONATE SECTION -->
+      <div class="mt-8 border-t-2 border-dashed border-gray-300 pt-8 pb-20 flex flex-col items-center">
+        <h3 class="text-sm font-bold text-blue-900 uppercase mb-2" data-i18n="donate_title">Ủng hộ tác giả</h3>
+        <p class="text-xs text-gray-500 mb-4 text-center px-4" data-i18n="donate_desc">Nếu bạn thấy công cụ này hữu ích, hãy mời mình một ly cà phê nhé! ☕</p>
+        <!-- Nhớ để file ảnh donate.png cùng thư mục với file html này -->
+        <img src="donate.png" alt="QR Donate" class="w-40 h-40 object-contain rounded-xl shadow-md border border-gray-200 p-2 bg-white hover:scale-105 transition-transform cursor-pointer">
+      </div>
+
     </form>
   </div>
 
   <!-- CỘT PHẢI: XEM TRƯỚC CV -->
   <div class="w-full md:w-1/2 lg:w-7/12 bg-gray-400 h-full overflow-y-auto p-4 flex justify-center items-start">
-    <!-- Khung Iframe được nới rộng, thêm bóng đổ để giống tờ giấy A4 thực tế -->
     <iframe id="previewFrame" class="w-full max-w-[210mm] min-h-[297mm] bg-white shadow-2xl border-none transition-all duration-300"></iframe>
   </div>
 
@@ -127,6 +134,8 @@ Bachelor of Software Engineering
       label_skills: "Kỹ năng (Mỗi dòng 1 nhóm)", section_experience: "Kinh nghiệm làm việc",
       btn_add_exp: "+ Thêm", label_education: "Học vấn & Giải thưởng",
       btn_preview: "Xem Trước", btn_print: "In PDF", btn_download: "Tải HTML",
+      donate_title: "Ủng hộ tác giả",
+      donate_desc: "Nếu bạn thấy công cụ này hữu ích, hãy mời mình một ly cà phê nhé! ☕",
       placeholder_job_title: "Chức danh (VD: Senior Engineer)", placeholder_job_date: "Thời gian (VD: 2021 - Present)",
       placeholder_job_company: "Tên công ty", placeholder_job_desc: "Mô tả công việc (Mỗi dòng bắt đầu bằng dấu - để tạo gạch đầu dòng)",
       cv_summary: "Tóm tắt bản thân", cv_skills: "Kỹ năng chuyên môn",
@@ -140,6 +149,8 @@ Bachelor of Software Engineering
       label_skills: "Technical Skills (1 line per group)", section_experience: "Work Experience",
       btn_add_exp: "+ Add", label_education: "Education & Achievements",
       btn_preview: "Preview", btn_print: "Print PDF", btn_download: "Download HTML",
+      donate_title: "Support the Author",
+      donate_desc: "If you find this tool helpful, you can buy me a coffee! ☕",
       placeholder_job_title: "Job Title (e.g., Senior Engineer)", placeholder_job_date: "Date (e.g., 2021 - Present)",
       placeholder_job_company: "Company Name", placeholder_job_desc: "Job Description (Start lines with '-' for bullets)",
       cv_summary: "Professional Summary", cv_skills: "Technical Skills",
@@ -288,16 +299,9 @@ Bachelor of Software Engineering
       <meta charset="UTF-8">
       <title>${name} - CV</title>
       <style>
-        /* Cấu hình chuẩn cho Máy in */
         @page { size: A4; margin: 15mm; }
-        
         body { font-family: "Calibri", "Arial", sans-serif; font-size: 10pt; line-height: 1.35; color: #333; margin: 0; padding: 0; }
-        
-        /* BỔ SUNG: Tạo lề khi xem trước trên màn hình giống hệt lúc in */
-        @media screen {
-          body { padding: 15mm; background: #fff; }
-        }
-
+        @media screen { body { padding: 15mm; background: #fff; } }
         .header-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
         .header-table td { vertical-align: middle; padding: 0; }
         .avatar-cell { width: 110px; padding-right: 15px !important; }
@@ -353,7 +357,6 @@ Bachelor of Software Engineering
     doc.write(html);
     doc.close();
 
-    // Tự động điều chỉnh chiều cao của Iframe cho vừa khít với nội dung
     setTimeout(() => {
       if (doc.body) {
         frame.style.height = doc.body.scrollHeight + 'px';
