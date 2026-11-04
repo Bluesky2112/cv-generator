@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CV Generator Tool</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  /* CSS cho khung xem trước CV (giữ nguyên template của bạn) */
+  .cv-preview {
+    font-family: "Calibri", "Arial", sans-serif;
+    font-size: 10pt;
+    line-height: 1.35;
+    color: #333;
+    background: white;
+    width: 100%;
+    max-width: 210mm; /* Chuẩn A4 */
+    margin: 0 auto;
+    padding: 15mm;
+  }
+  .cv-preview h1 { font-size: 22pt; margin: 0 0 3px 0; color: #1a3d6d; text-transform: uppercase; }
+  .cv-preview .subtitle { font-size: 11.5pt; font-weight: bold; color: #555; margin-bottom: 8px; }
+  .cv-preview .contact { font-size: 9pt; color: #444; line-height: 1.5; }
+  .cv-preview h2 { font-size: 11.5pt; color: #1a3d6d; text-transform: uppercase; border-bottom: 1.5px solid #1a3d6d; padding-bottom: 2px; margin: 15px 0 8px 0; }
+  .cv-preview .skills-list { font-size: 9.5pt; line-height: 1.4; margin-bottom: 10px; }
+  .cv-preview .skills-list p { margin-bottom: 3px; }
+  .cv-preview .job { margin-bottom: 12px; }
+  .cv-preview table.job-header { width: 100%; border-collapse: collapse; margin-bottom: 2px; }
+  .cv-preview table.job-header td { padding: 0; }
+  .cv-preview .job-title { text-align: left; font-weight: bold; font-size: 10.5pt; color: #1a3d6d; }
+  .cv-preview .job-date { text-align: right; font-weight: bold; font-size: 9.5pt; color: #555; }
+  .cv-preview .job-company { font-style: italic; font-size: 9.5pt; color: #333; margin-bottom: 4px; }
+  .cv-preview .job-desc { font-size: 9.5pt; margin-bottom: 3px; color: #333; white-space: pre-wrap; }
+  .cv-preview ul { margin: 3px 0 5px 0; padding-left: 15px; }
+  .cv-preview li { margin-bottom: 3px; font-size: 9.5pt; text-align: justify; color: #333; white-space: pre-wrap; }
+  .cv-preview .tech { font-size: 9pt; font-style: italic; color: #666; margin-top: 3px; }
+  .cv-preview .summary { text-align: justify; font-size: 9.5pt; white-space: pre-wrap; }
+  .cv-preview .avatar-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 2px solid #1a3d6d; }
+  
+  /* Ẩn thanh cuộn của iframe xem trước */
+  .preview-container::-webkit-scrollbar { width: 8px; }
+  .preview-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+</style>
+</head>
+<body class="bg-gray-100 text-gray-800 h-screen flex flex-col md:flex-row overflow-hidden">
+
+  <!-- CỘT TRÁI: FORM NHẬP LIỆU -->
+  <div class="w-full md:w-1/2 lg:w-5/12 bg-white shadow-lg overflow-y-auto h-full p-6">
+    <h1 class="text-2xl font-bold text-blue-900 mb-4">Tạo CV Tự Động</h1>
+    <form id="cvForm" class="space-y-4">
+      
+      <!-- Thông tin cơ bản -->
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium">Họ và Tên</label>
+          <input type="text" id="name" value="LƯƠNG ĐỨC THIỆN" class="w-full border p-2 rounded" required>
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Chức danh</label>
+          <input type="text" id="title" value="Senior Software Engineer - 10+ Years Experience" class="w-full border p-2 rounded" required>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium">Email & SĐT</label>
+        <input type="text" id="contact1" value="ducthien.cnpm06@gmail.com | +84-932501045" class="w-full border p-2 rounded" required>
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Địa chỉ</label>
+        <input type="text" id="contact2" value="The Art Apartment, Gia Hoa Residential Area, 523A Do Xuan Hop Street, Thu Duc, HCM" class="w-full border p-2 rounded">
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Ngôn ngữ</label>
+        <input type="text" id="contact3" value="Vietnamese (Native) | English (Professional)" class="w-full border p-2 rounded">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium">Ảnh đại diện (Avatar)</label>
+        <input type="file" id="avatarInput" accept="image/*" class="w-full border p-2 rounded bg-gray-50">
+      </div>
+
+      <!-- Tóm tắt -->
+      <div>
+        <label class="block text-sm font-medium">Tóm tắt bản thân (Summary)</label>
+        <textarea id="summary" rows="4" class="w-full border p-2 rounded" required>Senior Software Engineer with 10+ years of experience building and operating cloud-native microservices at scale. Delivered Java 21 / Spring Boot 3 REST APIs and React 19 SPAs on AWS for a mission-critical title management platform. Deep expertise in event-driven pipelines, partner integrations, and production resilience.</textarea>
+      </div>
+
+      <!-- Kỹ năng -->
+      <div>
+        <label class="block text-sm font-medium">Kỹ năng (Mỗi dòng 1 nhóm kỹ năng)</label>
+        <textarea id="skills" rows="6" class="w-full border p-2 rounded" required>Languages: Java 21, Python, TypeScript, SQL
+Backend: Spring Boot 3, Spring Security, Node.js, Microservices
+Frontend: React 19, Vite, Redux Toolkit
+Cloud & AWS: ECS, Lambda, S3, SQS, DynamoDB</textarea>
+      </div>
+
+      <!-- Kinh nghiệm -->
+      <div>
+        <label class="block text-sm font-medium">Kinh nghiệm làm việc (Ngăn cách bằng dấu ---)</label>
+        <textarea id="experience" rows="10" class="w-full border p-2 rounded font-mono text-sm" required>
+Senior Software Engineer | 06/2021 - Present
+Vault - FPT (C99 program) & Palantir Team
+Project: Title Vault - Cox Automotive
+- Developed and maintained RESTful microservices in Java 21 and Spring Boot 3.
+- Built features on a React 19 front end with Microsoft Entra ID authentication.
+- Integrated partner systems with no downtime.
+Technology: Java 21, Spring Boot 3, React 19, PostgreSQL, AWS.
+---
+Senior Software Engineer | 03/2021 - 06/2021
+BackOffice team - FPT
+- Implemented new reports, transformations, and data monitoring.
+Technology: Big Data, PySpark, Python, PostgreSQL.
+        </textarea>
+      </div>
+
+      <!-- Học vấn & Giải thưởng -->
+      <div>
+        <label class="block text-sm font-medium">Học vấn & Giải thưởng</label>
+        <textarea id="education" rows="3" class="w-full border p-2 rounded">
+University of Information Technology | 09/2011 - 01/2016
+Bachelor of Software Engineering
+- 2020 Best Overall Team - Hackathon Machine Learning FHM.AVI
+- Second Prize - Game UIT Hackathon 2013</textarea>
+      </div>
+
+      <!-- Nút Hành Động -->
+      <div class="flex gap-4 pt-4 sticky bottom-0 bg-white pb-2">
+        <button type="button" onclick="generateCV()" class="flex-1 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">Xem Trước</button>
+        <button type="button" onclick="downloadHTML()" class="flex-1 bg-green-600 text-white py-2 rounded hover:bg-green-700 transition">Tải File HTML</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- CỘT PHẢI: XEM TRƯỚC CV -->
+  <div class="w-full md:w-1/2 lg:w-7/12 bg-gray-200 h-full preview-container overflow-y-auto p-4 flex justify-center">
+    <!-- Iframe này sẽ chứa CV được generate -->
+    <iframe id="previewFrame" class="w-full max-w-[210mm] bg-white shadow-xl h-[297mm] border-none"></iframe>
+  </div>
+
+<script>
+  let base64Image = "";
+
+  // Xử lý upload ảnh
+  document.getElementById('avatarInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        base64Image = event.target.result;
+        generateCV(); // Tự động cập nhật khi có ảnh
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Hàm tạo HTML CV
+  function generateHTML() {
+    const name = document.getElementById('name').value;
+    const title = document.getElementById('title').value;
+    const contact1 = document.getElementById('contact1').value;
+    const contact2 = document.getElementById('contact2').value;
+    const contact3 = document.getElementById('contact3').value;
+    const summary = document.getElementById('summary').value;
+    const skillsRaw = document.getElementById('skills').value;
+    const expRaw = document.getElementById('experience').value;
+    const eduRaw = document.getElementById('education').value;
+
+    // Xử lý Kỹ năng
+    let skillsHTML = "";
+    skillsRaw.split('\n').forEach(line => {
+      if(line.trim()) skillsHTML += `<p><b>${line.split(':')[0]}:</b>${line.substring(line.indexOf(':') + 1)}</p>`;
+    });
+
+    // Xử lý Kinh nghiệm (Format: Title | Date \n Company \n Description... \n ---)
+    let expHTML = "";
+    const jobs = expRaw.split('---');
+    jobs.forEach(job => {
+      const lines = job.trim().split('\n');
+      if(lines.length >= 2) {
+        const headerParts = lines[0].split('|');
+        const jobTitle = headerParts[0]?.trim() || "";
+        const jobDate = headerParts[1]?.trim() || "";
+        const company = lines[1]?.trim() || "";
+        
+        // Lấy phần mô tả
+        const descLines = lines.slice(2);
+        let descHTML = "";
+        let inList = false;
+        
+        descLines.forEach(line => {
+          line = line.trim();
+          if(line.startsWith('-')) {
+             if(!inList) { descHTML += '<ul>'; inList = true; }
+             descHTML += `<li>${line.substring(1).trim()}</li>`;
+          } else if(line.toLowerCase().startsWith('technology:')) {
+             if(inList) { descHTML += '</ul>'; inList = false; }
+             descHTML += `<div class="tech">${line}</div>`;
+          } else if(line) {
+             if(inList) { descHTML += '</ul>'; inList = false; }
+             descHTML += `<div class="job-desc">${line}</div>`;
+          }
+        });
+        if(inList) descHTML += '</ul>';
+
+        expHTML += `
+          <div class="job">
+            <table class="job-header">
+              <tr>
+                <td class="job-title">${jobTitle}</td>
+                <td class="job-date">${jobDate}</td>
+              </tr>
+            </table>
+            <div class="job-company">${company}</div>
+            ${descHTML}
+          </div>
+        `;
+      }
+    });
+
+    // Xử lý Học vấn (Format đơn giản)
+    let eduHTML = "";
+    const eduLines = eduRaw.trim().split('\n');
+    if(eduLines.length >= 2) {
+       const headerParts = eduLines[0].split('|');
+       eduHTML += `
+        <div class="job">
+          <table class="job-header">
+            <tr>
+              <td class="job-title">${headerParts[0]?.trim()}</td>
+              <td class="job-date">${headerParts[1]?.trim() || ""}</td>
+            </tr>
+          </table>
+          <div class="job-company">${eduLines[1]?.trim()}</div>
+          <ul>
+            ${eduLines.slice(2).map(l => l.trim().startsWith('-') ? `<li>${l.substring(1).trim()}</li>` : `<li>${l}</li>`).join('')}
+          </ul>
+        </div>
+       `;
+    }
+
+    // Avatar HTML
+    const avatarHTML = base64Image 
+      ? `<td class="avatar-cell"><img src="${base64Image}" class="avatar-img" alt="Avatar"></td>` 
+      : '';
+
+    // Trả về toàn bộ HTML
+    return `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+      <meta charset="UTF-8">
+      <title>${name} - CV</title>
+      <style>
+        @page { size: A4; margin: 15mm; }
+        body { font-family: "Calibri", "Arial", sans-serif; font-size: 10pt; line-height: 1.35; color: #333; margin: 0; padding: 0; }
+        .header-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+        .header-table td { vertical-align: middle; padding: 0; }
+        .avatar-cell { width: 110px; padding-right: 15px !important; }
+        .avatar-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 2px solid #1a3d6d; }
+        h1 { font-size: 22pt; margin: 0 0 3px 0; color: #1a3d6d; text-transform: uppercase; }
+        .subtitle { font-size: 11.5pt; font-weight: bold; color: #555; margin-bottom: 8px; }
+        .contact { font-size: 9pt; color: #444; line-height: 1.5; }
+        h2 { font-size: 11.5pt; color: #1a3d6d; text-transform: uppercase; border-bottom: 1.5px solid #1a3d6d; padding-bottom: 2px; margin: 15px 0 8px 0; }
+        .skills-list { font-size: 9.5pt; line-height: 1.4; }
+        .skills-list p { margin-bottom: 3px; }
+        .job { margin-bottom: 12px; }
+        table.job-header { width: 100%; border-collapse: collapse; margin-bottom: 2px; }
+        table.job-header td { padding: 0; }
+        .job-title { text-align: left; font-weight: bold; font-size: 10.5pt; color: #1a3d6d; }
+        .job-date { text-align: right; font-weight: bold; font-size: 9.5pt; color: #555; }
+        .job-company { font-style: italic; font-size: 9.5pt; color: #333; margin-bottom: 4px; }
+        .job-desc { font-size: 9.5pt; margin-bottom: 3px; color: #333; }
+        ul { margin: 3px 0 5px 0; padding-left: 15px; }
+        li { margin-bottom: 3px; font-size: 9.5pt; text-align: justify; color: #333; }
+        .tech { font-size: 9pt; font-style: italic; color: #666; margin-top: 3px; }
+        .summary { text-align: justify; font-size: 9.5pt; white-space: pre-wrap; }
+      </style>
+      </head>
+      <body>
+        <table class="header-table">
+          <tr>
+            ${avatarHTML}
+            <td class="info-cell">
+              <h1>${name}</h1>
+              <div class="subtitle">${title}</div>
+              <div class="contact">
+                ${contact1}<br>${contact2}<br>${contact3}
+              </div>
+            </td>
+          </tr>
+        </table>
+        <h2>Professional Summary</h2>
+        <div class="summary">${summary}</div>
+        <h2>Technical Skills</h2>
+        <div class="skills-list">${skillsHTML}</div>
+        <h2>Work Experience</h2>
+        ${expHTML}
+        <h2>Education & Achievements</h2>
+        ${eduHTML}
+      </body>
+      </html>
+    `;
+  }
+
+  // Cập nhật Iframe xem trước
+  function generateCV() {
+    const html = generateHTML();
+    const frame = document.getElementById('previewFrame');
+    const doc = frame.contentDocument || frame.contentWindow.document;
+    doc.open();
+    doc.write(html);
+    doc.close();
+  }
+
+  // Tải file HTML về máy
+  function downloadHTML() {
+    const html = generateHTML();
+    const blob = new Blob([html], {type: 'text/html'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'My_CV.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // Generate lần đầu khi load trang
+  window.onload = generateCV;
+
+  // Tự động generate khi gõ (debounce nhẹ)
+  let timeout = null;
+  document.getElementById('cvForm').addEventListener('input', function() {
+    clearTimeout(timeout);
+    timeout = setTimeout(generateCV, 500);
+  });
+</script>
+</body>
+</html>
