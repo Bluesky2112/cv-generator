@@ -1,6 +1,6 @@
 # 🚀 CV Generator
 
-**[en English](#-english) | [🇻🇳 Tiếng Việt](#-tiếng-việt)**
+**[gb English](#-english) | [🇻🇳 Tiếng Việt](#-tiếng-việt)**
 
 ---
 
