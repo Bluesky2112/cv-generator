@@ -14,7 +14,8 @@ A simple, fast, and secure web tool to create professional resumes (CVs) directl
 ### ✨ Features
 - **Live Preview:** Type on the left, and watch your CV update instantly on the right.
 - **Avatar Support:** Automatically embeds your photo (Base64) directly into the exported HTML file.
-- **ATS-Friendly:** Single-column layout using basic HTML tables and elements. No complex CSS that breaks parsing by Applicant Tracking Systems.
+- **ATS-Friendly:** Single-column **semantic HTML** — no tables, no CSS columns, no text boxes. Contact details are labelled (`Email:`, `Phone:`, `Location:`), section headings use standard names, and each role/institution is a real heading, so parsers extract every field correctly.
+- **Clean PDF output:** Arial/Helvetica, left-aligned text (no justified text), consistent `MM/YYYY - MM/YYYY` dates, and `break-inside: avoid` so a job never gets split across pages.
 - **100% Client-Side:** All data is processed locally in your browser. No data is sent to any server.
 - **1-Click HTML Export:** Download a single, self-contained HTML file (with embedded images) ready for PDF printing.
 
@@ -24,6 +25,14 @@ A simple, fast, and secure web tool to create professional resumes (CVs) directl
 3. Upload your avatar photo (optional).
 4. Click **Preview** to check the layout (or let it auto-update).
 5. Click **Download HTML** to save your CV to your computer.
+
+### ✅ ATS Checklist (content matters as much as layout)
+The template fixes the *structure*, but these *content* rules decide most of your score:
+- Mirror the exact keywords from the job description (e.g. "Spring Boot", "microservices", "CI/CD") in the Summary and Skills.
+- Start every bullet with a strong verb and end with a measurable result: *"Reduced API latency by 35% by adding Redis caching."*
+- Keep one date format everywhere: `MM/YYYY - MM/YYYY`. Write `Present` for the current job.
+- Prefer 1 page for under ~5 years of experience, 2 pages maximum.
+- Name the file `FirstName-LastName-CV.pdf`, not `cv_final_v2.pdf`.
 
 ### 🖨️ Exporting to PDF (Perfect Layout)
 After downloading the `My_CV.html` file:
@@ -65,7 +74,8 @@ Một công cụ web đơn giản, nhanh chóng và bảo mật giúp bạn tạ
 ### ✨ Tính năng nổi bật
 - **Xem trước thời gian thực (Live Preview):** Gõ thông tin bên trái, CV sẽ tự động cập nhật bên phải.
 - **Hỗ trợ Ảnh đại diện:** Tự động nhúng ảnh (Base64) trực tiếp vào file HTML xuất ra.
-- **Chuẩn ATS (Applicant Tracking System):** Bố cục 1 cột, sử dụng Table và các thẻ HTML cơ bản, không dùng các thuộc tính CSS phức tạp gây lỗi khi đọc bằng máy.
+- **Chuẩn ATS (Applicant Tracking System):** Bố cục 1 cột bằng **semantic HTML** — không dùng bảng, không chia cột, không text box. Thông tin liên hệ có nhãn rõ ràng (`Email:`, `Phone:`, `Location:`), tiêu đề section theo chuẩn, mỗi vị trí/trường học là một heading thật nên máy đọc đúng từng trường.
+- **PDF sạch:** Font Arial/Helvetica, căn trái (không justify), ngày tháng đồng nhất `MM/YYYY - MM/YYYY`, và `break-inside: avoid` để một job không bị cắt đôi qua trang.
 - **Bảo mật 100% (Client-side):** Mọi dữ liệu bạn nhập chỉ xử lý trên trình duyệt của bạn. Không có dữ liệu nào được gửi lên server.
 - **Xuất file HTML 1-Click:** Tải về file HTML duy nhất (chứa cả ảnh và chữ), sẵn sàng để in ra PDF.
 
@@ -75,6 +85,14 @@ Một công cụ web đơn giản, nhanh chóng và bảo mật giúp bạn tạ
 3. Tải lên ảnh đại diện (Avatar) nếu muốn.
 4. Bấm nút **Xem Trước** để kiểm tra lại (hoặc tool sẽ tự động cập nhật).
 5. Bấm **Tải File HTML** để lưu CV về máy.
+
+### ✅ Checklist ATS (nội dung quan trọng ngang bố cục)
+Template đã xử lý phần *bố cục*, nhưng điểm số phần lớn nằm ở *nội dung*:
+- Copy đúng từ khóa trong JD (ví dụ "Spring Boot", "microservices", "CI/CD") vào phần Tóm tắt và Kỹ năng.
+- Mỗi bullet bắt đầu bằng động từ mạnh và kết thúc bằng kết quả có số liệu: *"Giảm 35% độ trễ API nhờ thêm Redis caching."*
+- Dùng duy nhất một định dạng ngày: `MM/YYYY - MM/YYYY`, job hiện tại ghi `Present`.
+- Dưới ~5 năm kinh nghiệm nên để 1 trang, tối đa 2 trang.
+- Đặt tên file `Ho-Ten-CV.pdf`, đừng dùng `cv_final_v2.pdf`.
 
 ### 🖨️ Cách in ra PDF chuẩn đẹp nhất
 Sau khi tải file `My_CV.html` về máy:

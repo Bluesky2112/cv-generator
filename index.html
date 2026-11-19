@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,25 +18,26 @@
     outline: none;
   }
   .lang-select:hover { background-color: #e2e8f0; }
+  .hint { font-size: 11px; color: #6b7280; line-height: 1.35; margin-top: 2px; }
 </style>
 </head>
 <body class="bg-gray-100 text-gray-800 h-screen flex flex-col md:flex-row overflow-hidden">
 
   <!-- CỘT TRÁI: FORM NHẬP LIỆU -->
   <div class="w-full md:w-1/2 lg:w-5/12 bg-white shadow-lg overflow-y-auto h-full p-6 relative">
-    
+
     <!-- HEADER CỦA FORM -->
     <div class="flex justify-between items-center mb-6 border-b pb-4">
       <h1 class="text-2xl font-bold text-blue-900" data-i18n="app_title">Tạo CV Tự Động</h1>
-      
+
       <select id="langSelect" class="lang-select text-sm">
-        <option value="en">🇬🇧 English</option>
+        <option value="en" selected>🇬🇧 English</option>
         <option value="vi">🇻🇳 Tiếng Việt</option>
       </select>
     </div>
 
     <form id="cvForm" class="space-y-5">
-      
+
       <!-- Thông tin cơ bản -->
       <div class="space-y-3 bg-gray-50 p-3 rounded border">
         <div class="grid grid-cols-2 gap-3">
@@ -49,35 +50,57 @@
             <input type="text" id="title" value="Senior Software Engineer" class="w-full border p-2 rounded text-sm" required>
           </div>
         </div>
-        <div>
-          <label class="block text-xs font-bold uppercase text-gray-600" data-i18n="label_contact1">Email & SĐT</label>
-          <input type="text" id="contact1" value="test@gmail.com | +84-932501111" class="w-full border p-2 rounded text-sm" required>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold uppercase text-gray-600" data-i18n="label_email">Email</label>
+            <input type="email" id="email" value="" placeholder="you@example.com" class="w-full border p-2 rounded text-sm" required>
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase text-gray-600" data-i18n="label_phone">Số điện thoại</label>
+            <input type="tel" id="phone" value="" placeholder="+84 900 000 000" class="w-full border p-2 rounded text-sm" required>
+          </div>
         </div>
         <div>
-          <label class="block text-xs font-bold uppercase text-gray-600" data-i18n="label_contact2">Địa chỉ</label>
-          <input type="text" id="contact2" value="Thu Duc, Ho Chi Minh, Vietnam" class="w-full border p-2 rounded text-sm">
+          <label class="block text-xs font-bold uppercase text-gray-600" data-i18n="label_location">Địa điểm</label>
+          <input type="text" id="location" value="" placeholder="City, Country" class="w-full border p-2 rounded text-sm">
         </div>
         <div>
-          <label class="block text-xs font-bold uppercase text-gray-600" data-i18n="label_contact3">Ngôn ngữ</label>
-          <input type="text" id="contact3" value="Vietnamese (Native) | English (Professional)" class="w-full border p-2 rounded text-sm">
+          <label class="block text-xs font-bold uppercase text-gray-600" data-i18n="label_links">LinkedIn / GitHub / Portfolio</label>
+          <input type="text" id="links" value="" placeholder="linkedin.com/in/your-name | github.com/your-name" class="w-full border p-2 rounded text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-bold uppercase text-gray-600" data-i18n="label_personal">Thông tin cá nhân</label>
+          <input type="text" id="personal" value="" placeholder="Date of Birth: ... | Nationality: ..." class="w-full border p-2 rounded text-sm">
+          <p class="hint" data-i18n="hint_personal">Có thể xoá trống nếu apply vào thị trường không cần (US/EU thường khuyến khích bỏ).</p>
         </div>
         <div>
           <label class="block text-xs font-bold uppercase text-gray-600" data-i18n="label_avatar">Ảnh đại diện (Avatar)</label>
-          <input type="file" id="avatarInput" accept="image/*" class="w-full border p-2 rounded text-sm bg-white">
+          <div class="flex gap-2">
+            <input type="file" id="avatarInput" accept="image/*" class="w-full border p-2 rounded text-sm bg-white">
+            <button type="button" onclick="clearAvatar()" class="shrink-0 border px-3 rounded text-sm font-bold text-gray-600 hover:bg-gray-100 transition" data-i18n="btn_clear_avatar">Xoá ảnh</button>
+          </div>
+          <p class="hint" data-i18n="hint_avatar">Ảnh không ảnh hưởng điểm ATS. Có thể bỏ trống.</p>
         </div>
       </div>
 
       <!-- Tóm tắt -->
       <div>
         <label class="block text-xs font-bold uppercase text-gray-600 mb-1" data-i18n="label_summary">Tóm tắt bản thân</label>
-        <textarea id="summary" rows="3" class="w-full border p-2 rounded text-sm" required>Junior Software Engineer with 1+ years of experience building and operating cloud-native microservices at scale.</textarea>
+        <textarea id="summary" rows="5" class="w-full border p-2 rounded text-sm" required>Software Engineer with 5+ years of experience building and operating cloud-native services. Works across Java / Spring Boot backends and React front ends, with hands-on experience in AWS, CI/CD and production troubleshooting.</textarea>
+        <p class="hint" data-i18n="hint_summary">3-4 dòng: số năm kinh nghiệm + vai trò + từ khóa công nghệ chính + 1 thành tựu có số liệu.</p>
       </div>
 
       <!-- Kỹ năng -->
       <div>
         <label class="block text-xs font-bold uppercase text-gray-600 mb-1" data-i18n="label_skills">Kỹ năng (Mỗi dòng 1 nhóm kỹ năng)</label>
-        <textarea id="skills" rows="4" class="w-full border p-2 rounded text-sm" required>Languages: Java 21, Python, TypeScript, SQL
-Backend: Spring Boot 3, Spring Security, Node.js</textarea>
+        <textarea id="skills" rows="8" class="w-full border p-2 rounded text-sm" required>Languages: Java, Python, TypeScript, JavaScript, SQL
+Backend: Spring Boot, Spring Security, Data JPA, Node.js, RESTful APIs, Microservices
+Frontend: React, Vite, Redux Toolkit, HTML, CSS
+Cloud & AWS: EC2, ECS, S3, Lambda, SQS, RDS, CloudWatch
+Data & Messaging: PostgreSQL, SQL Server, Redis, Kafka
+DevOps & Tools: Docker, Terraform, GitHub Actions, Git, JUnit, Postman
+Practices: Agile/Scrum, Code Review, Unit Testing, CI/CD</textarea>
+        <p class="hint" data-i18n="hint_skills">Định dạng "Nhóm: kỹ năng 1, kỹ năng 2" để ATS đọc đúng từng nhóm.</p>
       </div>
 
       <!-- KINH NGHIỆM LÀM VIỆC -->
@@ -91,9 +114,31 @@ Backend: Spring Boot 3, Spring Security, Node.js</textarea>
 
       <!-- Học vấn -->
       <div class="border-t pt-4">
-        <label class="block text-xs font-bold uppercase text-gray-600 mb-1" data-i18n="label_education">Học vấn & Giải thưởng</label>
-        <textarea id="education" rows="4" class="w-full border p-2 rounded text-sm">University of Information Technology | 09/2020 - 01/2024
+        <label class="block text-xs font-bold uppercase text-gray-600 mb-1" data-i18n="label_education">Học vấn</label>
+        <textarea id="education" rows="3" class="w-full border p-2 rounded text-sm">University of Information Technology | 09/2016 - 06/2020
 Bachelor of Software Engineering</textarea>
+        <p class="hint" data-i18n="hint_education">Dòng 1: Trường | Thời gian · Dòng 2: Bằng cấp/Chuyên ngành · Các dòng sau: - thành tựu. Nhiều trường cách nhau 1 dòng trống.</p>
+      </div>
+
+      <!-- Dự án -->
+      <div class="border-t pt-4">
+        <label class="block text-xs font-bold uppercase text-gray-600 mb-1" data-i18n="label_projects">Dự án</label>
+        <textarea id="projects" rows="4" class="w-full border p-2 rounded text-sm" placeholder=""></textarea>
+        <p class="hint" data-i18n="hint_projects">Mỗi dự án cách nhau 1 dòng trống. Dòng 1: Tên dự án | Thời gian · Dòng 2: Vai trò / Công nghệ · Sau đó: - mô tả + kết quả.</p>
+      </div>
+
+      <!-- Giải thưởng & Thành tích -->
+      <div class="border-t pt-4">
+        <label class="block text-xs font-bold uppercase text-gray-600 mb-1" data-i18n="label_awards">Giải thưởng & Thành tích</label>
+        <textarea id="awards" rows="3" class="w-full border p-2 rounded text-sm">- 2020 Best Overall Team - Internal Hackathon (Example Corp)</textarea>
+        <p class="hint" data-i18n="hint_awards">Mỗi dòng 1 mục. Ghi rõ năm cấp nếu có.</p>
+      </div>
+
+      <!-- Ngôn ngữ -->
+      <div class="border-t pt-4">
+        <label class="block text-xs font-bold uppercase text-gray-600 mb-1" data-i18n="label_languages">Ngôn ngữ</label>
+        <textarea id="languages" rows="2" class="w-full border p-2 rounded text-sm">Vietnamese - Native
+English - Professional working proficiency</textarea>
       </div>
 
       <!-- DONATE SECTION -->
@@ -127,36 +172,135 @@ Bachelor of Software Engineering</textarea>
     vi: {
       app_title: "Tạo CV Tự Động",
       label_name: "Họ và Tên", label_title: "Chức danh",
-      label_contact1: "Email & SĐT", label_contact2: "Địa chỉ", label_contact3: "Ngôn ngữ",
+      label_email: "Email", label_phone: "Số điện thoại",
+      label_location: "Địa điểm", label_links: "LinkedIn / GitHub / Portfolio",
+      label_personal: "Thông tin cá nhân",
       label_avatar: "Ảnh đại diện (Avatar)", label_summary: "Tóm tắt bản thân",
-      label_skills: "Kỹ năng (Mỗi dòng 1 nhóm)", section_experience: "Kinh nghiệm làm việc",
-      btn_add_exp: "+ Thêm", label_education: "Học vấn & Giải thưởng",
+      btn_clear_avatar: "Xoá ảnh",
+      label_skills: "Kỹ năng (Mỗi dòng 1 nhóm)",
+      section_experience: "Kinh nghiệm làm việc",
+      btn_add_exp: "+ Thêm", label_education: "Học vấn",
+      label_projects: "Dự án", label_awards: "Giải thưởng & Thành tích", label_languages: "Ngôn ngữ",
       btn_preview: "Xem Trước", btn_print: "In PDF", btn_download: "Tải HTML",
       donate_title: "Ủng hộ tác giả",
       donate_desc: "Nếu bạn thấy công cụ này hữu ích, hãy mời mình một ly cà phê nhé! ☕",
-      placeholder_job_title: "Chức danh (VD: Senior Engineer)", placeholder_job_date: "Thời gian (VD: 2021 - Present)",
-      placeholder_job_company: "Tên công ty", placeholder_job_desc: "Mô tả công việc (Mỗi dòng bắt đầu bằng dấu - để tạo gạch đầu dòng)",
+      hint_avatar: "Ảnh không ảnh hưởng điểm ATS. Có thể bỏ trống.",
+      hint_summary: "3-4 dòng: số năm kinh nghiệm + vai trò + từ khóa công nghệ chính + 1 thành tựu có số liệu.",
+      hint_skills: "Định dạng \"Nhóm: kỹ năng 1, kỹ năng 2\" để ATS đọc đúng từng nhóm.",
+      hint_education: "Dòng 1: Trường | Thời gian · Dòng 2: Bằng cấp/Chuyên ngành · Các dòng sau: - thành tựu. Nhiều trường cách nhau 1 dòng trống.",
+      hint_projects: "Mỗi dự án cách nhau 1 dòng trống. Dòng 1: Tên dự án | Thời gian · Dòng 2: Vai trò / Công nghệ · Sau đó: - mô tả + kết quả.",
+      hint_awards: "Mỗi dòng 1 mục. Ghi rõ năm cấp nếu có.",
+      hint_personal: "Có thể xoá trống nếu apply vào thị trường không cần (US/EU thường khuyến khích bỏ).",
+      placeholder_job_title: "Chức danh (VD: Senior Engineer)", placeholder_job_date: "Thời gian (VD: 06/2026 - Present)",
+      placeholder_job_company: "Tên công ty", placeholder_job_location: "Địa điểm (VD: Ho Chi Minh City)",
+      placeholder_job_desc: "Mô tả công việc (Mỗi dòng bắt đầu bằng dấu - để tạo gạch đầu dòng)",
       cv_summary: "Tóm tắt bản thân", cv_skills: "Kỹ năng chuyên môn",
-      cv_experience: "Kinh nghiệm làm việc", cv_education: "Học vấn & Giải thưởng"
+      cv_experience: "Kinh nghiệm làm việc", cv_education: "Học vấn",
+      cv_projects: "Dự án", cv_awards: "Giải thưởng & Thành tích", cv_languages: "Ngôn ngữ",
+      label_technologies: "Công nghệ", label_project: "Dự án"
     },
     en: {
       app_title: "CV Generator",
       label_name: "Full Name", label_title: "Job Title",
-      label_contact1: "Email & Phone", label_contact2: "Address", label_contact3: "Languages",
+      label_email: "Email", label_phone: "Phone",
+      label_location: "Location", label_links: "LinkedIn / GitHub / Portfolio",
+      label_personal: "Personal Details",
       label_avatar: "Avatar (Photo)", label_summary: "Professional Summary",
-      label_skills: "Technical Skills (1 line per group)", section_experience: "Work Experience",
-      btn_add_exp: "+ Add", label_education: "Education & Achievements",
+      btn_clear_avatar: "Remove photo",
+      label_skills: "Technical Skills (1 line per group)",
+      section_experience: "Work Experience",
+      btn_add_exp: "+ Add", label_education: "Education",
+      label_projects: "Projects", label_awards: "Awards & Achievements", label_languages: "Languages",
       btn_preview: "Preview", btn_print: "Print PDF", btn_download: "Download HTML",
       donate_title: "Support the Author",
       donate_desc: "If you find this tool helpful, you can buy me a coffee! ☕",
-      placeholder_job_title: "Job Title (e.g., Senior Engineer)", placeholder_job_date: "Date (e.g., 2021 - Present)",
-      placeholder_job_company: "Company Name", placeholder_job_desc: "Job Description (Start lines with '-' for bullets)",
+      hint_avatar: "A photo does not affect ATS scoring. Optional.",
+      hint_summary: "3-4 lines: years of experience + role + core tech keywords + one quantified achievement.",
+      hint_skills: "Use \"Group: skill 1, skill 2\" so ATS reads each group correctly.",
+      hint_education: "Line 1: School | Dates · Line 2: Degree/Major · Following lines: - achievements. Separate schools with a blank line.",
+      hint_projects: "Separate projects with a blank line. Line 1: Project | Dates · Line 2: Role / Tech · Then: - description and result.",
+      hint_awards: "One item per line. Include the year if relevant.",
+      hint_personal: "Leave empty for markets where this is not expected (US/EU employers usually prefer it omitted).",
+      placeholder_job_title: "Job Title (e.g., Senior Engineer)", placeholder_job_date: "Date (e.g., 06/2026 - Present)",
+      placeholder_job_company: "Company Name", placeholder_job_location: "Location (e.g., Ho Chi Minh City)",
+      placeholder_job_desc: "Job Description (Start lines with '-' for bullets)",
       cv_summary: "Professional Summary", cv_skills: "Technical Skills",
-      cv_experience: "Work Experience", cv_education: "Education & Achievements"
+      cv_experience: "Work Experience", cv_education: "Education",
+      cv_projects: "Projects", cv_awards: "Awards & Achievements", cv_languages: "Languages",
+      label_technologies: "Technologies", label_project: "Project"
     }
   };
 
   function t(key) { return i18n[currentLang][key] || key; }
+
+  /* ---------- Helpers: an toàn HTML + chuẩn hoá dữ liệu ---------- */
+
+  function esc(value) {
+    return String(value == null ? "" : value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  // Đưa ngày về 1 dạng thống nhất: "MM/YYYY - MM/YYYY" (ATS thích định dạng nhất quán)
+  function normDate(value) {
+    let d = String(value || "").replace(/[–—−]/g, "-").replace(/\s+/g, " ").trim();
+    d = d.replace(/\bpresent\b/gi, "Present").replace(/\bhiện tại\b/gi, "Present");
+    return d;
+  }
+
+  function isBullet(line) {
+    return /^[-•*·+]\s?/.test(line);
+  }
+
+  function stripBullet(line) {
+    return line.replace(/^[-•*·+]\s?/, "").trim();
+  }
+
+  function renderList(items) {
+    const clean = items.map(stripBullet).filter(Boolean);
+    if (!clean.length) return "";
+    return "<ul>" + clean.map(i => `<li>${esc(i)}</li>`).join("") + "</ul>";
+  }
+
+  // Hiển thị link gọn (bỏ https://www.) nhưng vẫn là hyperlink clickable trong PDF
+  function renderLinks(raw) {
+    return String(raw || "")
+      .split(/[|,\n]/)
+      .map(s => s.trim())
+      .filter(Boolean)
+      .map(entry => {
+        const label = entry.replace(/^https?:\/\//i, "").replace(/^www\./i, "").replace(/\/+$/, "");
+        const href = /^https?:\/\//i.test(entry) ? entry : "https://" + entry.replace(/^\/+/, "");
+        return `<a href="${href.replace(/"/g, "%22")}">${esc(label)}</a>`;
+      })
+      .join(" &nbsp;|&nbsp; ");
+  }
+
+  // Tách các "khối" (job/education/project) ngăn cách bằng dòng trống
+  function parseEntries(raw) {
+    return String(raw || "")
+      .split(/\n\s*\n/)
+      .map(block => block.trim())
+      .filter(Boolean)
+      .map(block => {
+        const lines = block.split("\n").map(l => l.trim()).filter(Boolean);
+        const head = lines.shift() || "";
+        let title = head;
+        let date = "";
+        const pipe = head.indexOf("|");
+        if (pipe > -1) {
+          title = head.slice(0, pipe).trim();
+          date = normDate(head.slice(pipe + 1).trim());
+        }
+        let subtitle = "";
+        if (lines.length && !isBullet(lines[0])) subtitle = lines.shift();
+        return { title, date, subtitle, bullets: lines };
+      });
+  }
+
+  /* ---------- UI ---------- */
 
   document.getElementById('langSelect').addEventListener('change', function(e) {
     currentLang = e.target.value;
@@ -172,8 +316,16 @@ Bachelor of Software Engineering</textarea>
       block.querySelector('.exp-title').placeholder = t('placeholder_job_title');
       block.querySelector('.exp-date').placeholder = t('placeholder_job_date');
       block.querySelector('.exp-company').placeholder = t('placeholder_job_company');
+      block.querySelector('.exp-location').placeholder = t('placeholder_job_location');
       block.querySelector('.exp-desc').placeholder = t('placeholder_job_desc');
     });
+  }
+
+  function clearAvatar() {
+    base64Image = "";
+    const input = document.getElementById('avatarInput');
+    if (input) input.value = "";
+    generateCV();
   }
 
   document.getElementById('avatarInput').addEventListener('change', function(e) {
@@ -188,32 +340,60 @@ Bachelor of Software Engineering</textarea>
     }
   });
 
-  function createJobBlockHTML(title = "", date = "", company = "", desc = "") {
+  function createJobBlockHTML(title = "", date = "", company = "", location = "", desc = "") {
     return `
       <div class="experience-block bg-gray-50 border rounded p-3 relative">
         <button type="button" onclick="this.parentElement.remove(); generateCV();" class="absolute top-2 right-2 text-red-500 hover:text-red-700 text-sm font-bold" title="Xóa">✕</button>
         <div class="grid grid-cols-2 gap-2 mb-2 pr-6">
-          <input type="text" class="exp-title w-full border p-1 rounded text-sm" placeholder="${t('placeholder_job_title')}" value="${title}">
-          <input type="text" class="exp-date w-full border p-1 rounded text-sm" placeholder="${t('placeholder_job_date')}" value="${date}">
+          <input type="text" class="exp-title w-full border p-1 rounded text-sm" placeholder="${t('placeholder_job_title')}" value="${esc(title)}">
+          <input type="text" class="exp-date w-full border p-1 rounded text-sm" placeholder="${t('placeholder_job_date')}" value="${esc(date)}">
         </div>
-        <input type="text" class="exp-company w-full border p-1 rounded text-sm mb-2" placeholder="${t('placeholder_job_company')}" value="${company}">
-        <textarea class="exp-desc w-full border p-1 rounded text-sm" rows="3" placeholder="${t('placeholder_job_desc')}">${desc}</textarea>
+        <div class="grid grid-cols-2 gap-2 mb-2">
+          <input type="text" class="exp-company w-full border p-1 rounded text-sm" placeholder="${t('placeholder_job_company')}" value="${esc(company)}">
+          <input type="text" class="exp-location w-full border p-1 rounded text-sm" placeholder="${t('placeholder_job_location')}" value="${esc(location)}">
+        </div>
+        <textarea class="exp-desc w-full border p-1 rounded text-sm" rows="3" placeholder="${t('placeholder_job_desc')}">${esc(desc)}</textarea>
       </div>
     `;
   }
 
-  function addExperience(title, date, company, desc) {
-    document.getElementById('experience-container').insertAdjacentHTML('beforeend', createJobBlockHTML(title, date, company, desc));
+  function addExperience(title, date, company, location, desc) {
+    document.getElementById('experience-container').insertAdjacentHTML('beforeend', createJobBlockHTML(title, date, company, location, desc));
   }
+
+  const DEFAULT_EXPERIENCE = [
+    {
+      title: "Senior Software Engineer",
+      date: "03/2022 - Present",
+      company: "Example Corp",
+      location: "Ho Chi Minh City, Vietnam",
+      desc: [
+        "Project: Payment Platform — Example Bank (01/2023 - Present)",
+        "- Developed and maintained Java 21 / Spring Boot 3 RESTful microservices on PostgreSQL, covering 8 services across payment and reporting flows.",
+        "- Built features on a React 19 front end with role-based routing and single sign-on.",
+        "Technology: Java 21, Spring Boot 3, React 19, PostgreSQL, AWS (ECS, S3), Terraform, GitHub Actions",
+        "Project: Reporting Portal — Example Retail (03/2022 - 01/2023)",
+        "- Implemented dashboards and scheduled reports for 3 internal teams.",
+        "Technology: Python, PySpark, PostgreSQL"
+      ].join("\n")
+    },
+    {
+      title: "Software Engineer",
+      date: "07/2019 - 03/2022",
+      company: "Sample Solutions",
+      location: "Ho Chi Minh City, Vietnam",
+      desc: [
+        "Project: Order Management System",
+        "- Implemented order and inventory features in an Agile/Scrum team.",
+        "- Reduced report generation time from 12s to 2s by adding a cache on top of PostgreSQL.",
+        "Technology: Java, Spring Boot, SQL Server, Redis"
+      ].join("\n")
+    }
+  ];
 
   window.addEventListener('DOMContentLoaded', () => {
     updateUILanguage();
-    addExperience(
-      "Junior Software Engineer", 
-      "06/2026 - Present", 
-      "FPT", 
-      "- Developed and maintained RESTful microservices in Java 21.\n- Built features on React 19 front end."
-    );
+    DEFAULT_EXPERIENCE.forEach(job => addExperience(job.title, job.date, job.company, job.location, job.desc));
     generateCV();
   });
 
@@ -222,126 +402,228 @@ Bachelor of Software Engineering</textarea>
     window.debounceTimer = setTimeout(generateCV, 500);
   });
 
+  /* ---------- Sinh CV (ATS-first, single column, semantic HTML) ---------- */
+
   function generateHTML() {
-    const name = document.getElementById('name').value;
-    const title = document.getElementById('title').value;
-    const contact1 = document.getElementById('contact1').value;
-    const contact2 = document.getElementById('contact2').value;
-    const contact3 = document.getElementById('contact3').value;
-    const summary = document.getElementById('summary').value;
-    const skillsRaw = document.getElementById('skills').value;
-    const eduRaw = document.getElementById('education').value;
+    const v = id => (document.getElementById(id)?.value || "").trim();
 
-    let skillsHTML = "";
-    skillsRaw.split('\n').forEach(line => {
-      if(line.trim()) skillsHTML += `<p><b>${line.split(':')[0]}:</b>${line.substring(line.indexOf(':') + 1)}</p>`;
-    });
+    const name = v('name');
+    const jobTitle = v('title');
+    const email = v('email');
+    const phone = v('phone');
+    const location = v('location');
+    const links = v('links');
+    const personal = v('personal');
+    const summary = v('summary');
+    const skillsRaw = v('skills');
+    const eduRaw = v('education');
+    const projectsRaw = v('projects');
+    const awardsRaw = v('awards');
+    const languagesRaw = v('languages');
 
+    /* --- Kỹ năng: "Nhóm: a, b" -> <p><strong>Nhóm:</strong> a, b</p> --- */
+    const skillsHTML = skillsRaw.split('\n').map(l => l.trim()).filter(Boolean).map(line => {
+      const i = line.indexOf(':');
+      if (i > 0) {
+        return `<p class="skill"><strong>${esc(line.slice(0, i).trim())}:</strong> ${esc(line.slice(i + 1).trim())}</p>`;
+      }
+      return `<p class="skill">${esc(line)}</p>`;
+    }).join('');
+
+    /* --- Kinh nghiệm --- */
     let expHTML = "";
     document.querySelectorAll('.experience-block').forEach(block => {
-      const jTitle = block.querySelector('.exp-title').value;
-      const jDate = block.querySelector('.exp-date').value;
-      const jCompany = block.querySelector('.exp-company').value;
+      const jTitle = block.querySelector('.exp-title').value.trim();
+      const jDate = normDate(block.querySelector('.exp-date').value);
+      const jCompany = block.querySelector('.exp-company').value.trim();
+      const jLocation = block.querySelector('.exp-location').value.trim();
       const jDesc = block.querySelector('.exp-desc').value;
 
+      // Giữ nguyên thứ tự dòng người dùng nhập: đoạn văn -> bullets -> Technology -> Project...
+      // Mỗi project là một block không bị cắt qua trang; job nhiều project được phép ngắt giữa các block.
       let descHTML = "";
-      let inList = false;
-      jDesc.split('\n').forEach(line => {
-        line = line.trim();
-        if(!line) return;
-        if(line.startsWith('-')) {
-           if(!inList) { descHTML += '<ul>'; inList = true; }
-           descHTML += `<li>${line.substring(1).trim()}</li>`;
-        } else if(line.toLowerCase().startsWith('technology:') || line.toLowerCase().startsWith('công nghệ:')) {
-           if(inList) { descHTML += '</ul>'; inList = false; }
-           descHTML += `<div class="tech">${line}</div>`;
-        } else {
-           if(inList) { descHTML += '</ul>'; inList = false; }
-           descHTML += `<div class="job-desc">${line}</div>`;
+      let blockHTML = "";
+      let bullets = [];
+      let projectCount = 0;
+
+      const flushBullets = () => {
+        if (bullets.length) { blockHTML += renderList(bullets); bullets = []; }
+      };
+      const flushBlock = () => {
+        flushBullets();
+        if (blockHTML) { descHTML += `<div class="job-block">${blockHTML}</div>`; blockHTML = ""; }
+      };
+
+      jDesc.split('\n').map(l => l.trim()).filter(Boolean).forEach(line => {
+        if (isBullet(line)) {
+          bullets.push(stripBullet(line));
+          return;
         }
+        flushBullets();
+
+        const techMatch = line.match(/^(technology|technologies|tech stack|công nghệ|kỹ thuật)\s*:\s*(.*)$/i);
+        if (techMatch) {
+          blockHTML += `<p class="tech"><strong>${esc(t('label_technologies'))}:</strong> ${esc(techMatch[2])}</p>`;
+          return;
+        }
+
+        const projMatch = line.match(/^(project|dự án)\s*:\s*(.*)$/i);
+        if (projMatch) {
+          let projName = projMatch[2];
+          let projDate = "";
+          // Ngày của project nằm cuối dòng: "Project: Tên dự án (MM/YYYY - MM/YYYY)"
+          const dm = projName.match(/\s*\((\d{2}\/\d{4}\s*[-–]\s*(?:\d{2}\/\d{4}|present|nay))\)\s*$/i);
+          if (dm) {
+            projDate = dm[1];
+            projName = projName.slice(0, dm.index).trim();
+          }
+          flushBlock();
+          projectCount++;
+          blockHTML = `<p class="job-project"><span class="proj-name"><span class="proj-label">${esc(t('label_project'))}:</span> ${esc(projName)}</span>${projDate ? `<span class="proj-period">&nbsp;${esc(projDate)}</span>` : ''}</p>`;
+          return;
+        }
+
+        blockHTML += `<p class="job-desc">${esc(line)}</p>`;
       });
-      if(inList) descHTML += '</ul>';
+      flushBlock();
 
       expHTML += `
-        <div class="job">
-          <table class="job-header">
-            <tr><td class="job-title">${jTitle}</td><td class="job-date">${jDate}</td></tr>
-          </table>
-          <div class="job-company">${jCompany}</div>
+        <article class="job${projectCount > 1 ? ' multi' : ''}">
+          <div class="job-head">
+            ${jTitle ? `<h3>${esc(jTitle)}</h3>` : '<span></span>'}
+            ${jDate ? `<span class="job-period">${esc(jDate)}</span>` : ''}
+          </div>
+          ${(jCompany || jLocation) ? `<p class="job-org">${esc([jCompany, jLocation].filter(Boolean).join(' · '))}</p>` : ''}
           ${descHTML}
-        </div>
+        </article>
       `;
     });
 
-    let eduHTML = "";
-    const eduLines = eduRaw.trim().split('\n');
-    if(eduLines.length >= 2) {
-       const headerParts = eduLines[0].split('|');
-       eduHTML += `
-        <div class="job">
-          <table class="job-header">
-            <tr><td class="job-title">${headerParts[0]?.trim()}</td><td class="job-date">${headerParts[1]?.trim() || ""}</td></tr>
-          </table>
-          <div class="job-company">${eduLines[1]?.trim()}</div>
-          <ul>${eduLines.slice(2).map(l => l.trim().startsWith('-') ? `<li>${l.substring(1).trim()}</li>` : `<li>${l}</li>`).join('')}</ul>
-        </div>
-       `;
+    /* --- Entry dùng chung cho Học vấn / Dự án --- */
+    function renderEntries(raw, sectionId) {
+      const entries = parseEntries(raw);
+      if (!entries.length) return "";
+      const html = entries.map(e => {
+        const meta = [e.subtitle, e.date].filter(Boolean).join(' | ');
+        return `
+          <article class="entry">
+            ${e.title ? `<h3>${esc(e.title)}</h3>` : ''}
+            ${meta ? `<p class="entry-meta">${esc(meta)}</p>` : ''}
+            ${renderList(e.bullets)}
+          </article>
+        `;
+      }).join("");
+      return `<section><h2>${esc(t(sectionId))}</h2>${html}</section>`;
     }
 
-    const avatarHTML = base64Image ? `<td class="avatar-cell"><img src="${base64Image}" class="avatar-img" alt="Avatar"></td>` : '';
+    /* --- Contact: có nhãn rõ ràng để ATS parse đúng field --- */
+    const contactLines = [];
+    const line1 = [];
+    if (email) line1.push(`Email: ${esc(email)}`);
+    if (phone) line1.push(`Phone: ${esc(phone)}`);
+    if (line1.length) contactLines.push(line1.join(' &nbsp;|&nbsp; '));
+    const line2 = [];
+    if (location) line2.push(`Location: ${esc(location)}`);
+    if (line2.length) contactLines.push(line2.join(' &nbsp;|&nbsp; '));
+    if (links) contactLines.push(renderLinks(links));
+    if (personal) contactLines.push(`<span class="personal">${esc(personal)}</span>`);
+
+    const photoHTML = base64Image
+      ? `<div class="photo"><img src="${base64Image}" alt=""></div>`
+      : '';
+
+    const languagesHTML = languagesRaw.split('\n').map(l => l.trim()).filter(Boolean);
 
     return `
       <!DOCTYPE html>
       <html lang="${currentLang}">
       <head>
       <meta charset="UTF-8">
-      <title>${name} - CV</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>${esc(name)} - ${esc(jobTitle)} - CV</title>
       <style>
-        @page { size: A4; margin: 15mm; }
-        body { font-family: "Calibri", "Arial", sans-serif; font-size: 10pt; line-height: 1.35; color: #333; margin: 0; padding: 0; }
-        @media screen { body { padding: 15mm; background: #fff; } }
-        .header-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
-        .header-table td { vertical-align: middle; padding: 0; }
-        .avatar-cell { width: 110px; padding-right: 15px !important; }
-        .avatar-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 2px solid #1a3d6d; }
-        h1 { font-size: 22pt; margin: 0 0 3px 0; color: #1a3d6d; text-transform: uppercase; }
-        .subtitle { font-size: 11.5pt; font-weight: bold; color: #555; margin-bottom: 8px; }
-        .contact { font-size: 9pt; color: #444; line-height: 1.5; }
-        h2 { font-size: 11.5pt; color: #1a3d6d; text-transform: uppercase; border-bottom: 1.5px solid #1a3d6d; padding-bottom: 2px; margin: 15px 0 8px 0; }
-        .skills-list { font-size: 9.5pt; line-height: 1.4; }
-        .skills-list p { margin-bottom: 3px; }
-        .job { margin-bottom: 12px; }
-        table.job-header { width: 100%; border-collapse: collapse; margin-bottom: 2px; }
-        table.job-header td { padding: 0; }
-        .job-title { text-align: left; font-weight: bold; font-size: 10.5pt; color: #1a3d6d; }
-        .job-date { text-align: right; font-weight: bold; font-size: 9.5pt; color: #555; }
-        .job-company { font-style: italic; font-size: 9.5pt; color: #333; margin-bottom: 4px; }
-        .job-desc { font-size: 9.5pt; margin-bottom: 3px; color: #333; }
-        ul { margin: 3px 0 5px 0; padding-left: 15px; }
-        li { margin-bottom: 3px; font-size: 9.5pt; text-align: justify; color: #333; }
-        .tech { font-size: 9pt; font-style: italic; color: #666; margin-top: 3px; }
-        .summary { text-align: justify; font-size: 9.5pt; white-space: pre-wrap; }
+        /* A4, single column: không dùng bảng, không chia cột, căn trái */
+        @page { size: A4; margin: 12mm; }
+        * { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; }
+        body {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 10pt;
+          line-height: 1.33;
+          color: #1a1a1a;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+        @media screen { body { padding: 12mm; max-width: 210mm; margin: 0 auto; background: #fff; } }
+
+        /* Header: flex để avatar cân giữa theo khối text (không dùng position:absolute) */
+        .cv-header { display: flex; align-items: center; gap: 18px; padding-bottom: 8px; border-bottom: 2px solid #1a3a5c; margin-bottom: 4px; }
+        .head-text { flex: 1 1 auto; min-width: 0; }
+        .photo { flex: 0 0 auto; }
+        .photo img { width: 92px; height: 92px; border-radius: 50%; object-fit: cover; display: block; }
+        h1 { font-size: 18.5pt; line-height: 1.15; margin: 0 0 2px; color: #1a3a5c; text-transform: uppercase; }
+        .headline { font-size: 11.5pt; font-weight: 700; color: #333; margin: 0 0 6px; }
+        .contact { font-size: 9.5pt; color: #222; line-height: 1.4; margin: 0; }
+        .contact .personal { color: #333; }
+        .contact a { color: #1a3a5c; text-decoration: none; }
+
+        /* Sections */
+        section { margin: 0; }
+        h2 {
+          font-size: 10.5pt; color: #1a3a5c; text-transform: uppercase;
+          border-bottom: 1px solid #c3ccd8; padding-bottom: 1px;
+          margin: 7px 0 4px; break-after: avoid; page-break-after: avoid;
+        }
+        h3 { font-size: 10pt; margin: 0; color: #111; break-after: avoid; page-break-after: avoid; }
+        p { margin: 0; }
+        .summary { font-size: 9.5pt; }
+        .skill { font-size: 9.5pt; margin-bottom: 1px; }
+
+        /* Entries */
+        .job, .entry { break-inside: avoid; page-break-inside: avoid; }
+        /* Job gom nhiều project được ngắt giữa các block, không ngắt giữa 1 project */
+        .job.multi { break-inside: auto; page-break-inside: auto; }
+        .job-block { break-inside: avoid; page-break-inside: avoid; }
+        /* Mỗi project là 1 khối có gáy riêng để mắt tách nhóm ngay */
+        .job.multi .job-block { padding-left: 10px; border-left: 2px solid #c9d4e2; }
+        .job.multi .job-block + .job-block { margin-top: 8px; }
+        .job.multi .job-org + .job-block { margin-top: 3px; }
+        .job-head, .job-org { break-after: avoid; page-break-after: avoid; }
+        .entry { margin-bottom: 6px; }
+        .job + .job { border-top: 1px solid #e2e7ef; margin-top: 4px; padding-top: 5px; }
+        .job-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+        .job-head h3 { font-size: 10.5pt; }
+        .job-period { font-size: 9.5pt; font-weight: 700; color: #1a3a5c; white-space: nowrap; }
+        .job-org { font-size: 9.5pt; color: #333; margin: 0 0 1px; }
+        .job-meta, .entry-meta { font-size: 9pt; color: #333; margin: 0 0 2px; }
+        /* Tên project: đậm, đen. Nhãn "Project:" nhạt. Mốc project: nhạt + nghiêng -> không tranh chỗ với mốc công ty */
+        .job-project { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-size: 9.5pt; color: #111; margin: 0 0 2px; }
+        .proj-name { flex: 1 1 auto; font-weight: 700; }
+        .proj-label { font-weight: 400; font-size: 8.5pt; color: #6b7787; }
+        .proj-period { font-size: 8.5pt; font-weight: 400; font-style: italic; color: #6b7787; white-space: nowrap; }
+        .job-desc { font-size: 9.5pt; margin-bottom: 2px; }
+        ul { margin: 1px 0 2px; padding-left: 15px; }
+        li { font-size: 9.5pt; margin-bottom: 0; }
+        .tech { font-size: 9pt; color: #333; margin-top: 2px; }
       </style>
       </head>
       <body>
-        <table class="header-table">
-          <tr>
-            ${avatarHTML}
-            <td class="info-cell">
-              <h1>${name}</h1>
-              <div class="subtitle">${title}</div>
-              <div class="contact">${contact1}<br>${contact2}<br>${contact3}</div>
-            </td>
-          </tr>
-        </table>
-        <h2>${t('cv_summary')}</h2>
-        <div class="summary">${summary}</div>
-        <h2>${t('cv_skills')}</h2>
-        <div class="skills-list">${skillsHTML}</div>
-        <h2>${t('cv_experience')}</h2>
-        ${expHTML}
-        <h2>${t('cv_education')}</h2>
-        ${eduHTML}
+        <header class="cv-header">
+          ${photoHTML}
+          <div class="head-text">
+            <h1>${esc(name)}</h1>
+            ${jobTitle ? `<p class="headline">${esc(jobTitle)}</p>` : ''}
+            ${contactLines.length ? `<p class="contact">${contactLines.join('<br>')}</p>` : ''}
+          </div>
+        </header>
+
+        ${summary ? `<section><h2>${esc(t('cv_summary'))}</h2><p class="summary">${esc(summary).replace(/\n+/g, ' ')}</p></section>` : ''}
+        ${skillsHTML ? `<section><h2>${esc(t('cv_skills'))}</h2>${skillsHTML}</section>` : ''}
+        ${expHTML ? `<section><h2>${esc(t('cv_experience'))}</h2>${expHTML}</section>` : ''}
+        ${renderEntries(eduRaw, 'cv_education')}
+        ${renderEntries(projectsRaw, 'cv_projects')}
+        ${awardsRaw ? `<section><h2>${esc(t('cv_awards'))}</h2>${renderList(awardsRaw.split('\n'))}</section>` : ''}
+        ${languagesHTML.length ? `<section><h2>${esc(t('cv_languages'))}</h2>${renderList(languagesHTML)}</section>` : ''}
       </body>
       </html>
     `;
